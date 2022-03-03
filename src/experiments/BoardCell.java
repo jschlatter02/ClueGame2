@@ -2,25 +2,25 @@ package experiments;
 
 import java.util.*;
 
-public class TestBoardCell {
+public class BoardCell {
 	private int row, col;
 	private boolean isRoom, isOccupied;
 	
-	private Set<TestBoardCell> adjList;
+	private Set<BoardCell> adjList;
 	static TestBoard board = new TestBoard();
 	
 	
-	public TestBoardCell(int row, int column) {
+	public BoardCell(int row, int column) {
 		this.row = row;
 		col = column;
-		adjList = new HashSet<TestBoardCell>();
+		adjList = new HashSet<BoardCell>();
 	}
 	
-	public void addAdjacency(TestBoardCell cell) {
+	public void addAdjacency(BoardCell cell) {
 		adjList.add(cell);
 	}
 	
-	public Set<TestBoardCell> getAdjList() {
+	public Set<BoardCell> getAdjList() {
 		return adjList;
 	}
 	
