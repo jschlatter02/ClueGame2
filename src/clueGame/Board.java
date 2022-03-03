@@ -2,6 +2,8 @@ package clueGame;
 
 import java.util.*;
 
+import experiments.TestBoardCell;
+
 
 public class Board {
 	private BoardCell[][] grid;
@@ -40,6 +42,7 @@ public class Board {
 		this.layoutConfigFile = layoutConfigFile;
 		this.setupConfigFile = setupConfigFile;
 	}
+	
 
 	
 	
