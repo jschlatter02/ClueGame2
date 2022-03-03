@@ -5,6 +5,7 @@ import java.util.*;
 import experiments.TestBoardCell;
 
 
+
 public class Board {
 	private BoardCell[][] grid;
 	private Set<BoardCell> targets;
@@ -23,6 +24,34 @@ public class Board {
 	// constructor is private to ensure only one can be created
 	private Board() {
 		super() ;
+		grid = new BoardCell[numRows][numColumns];
+		targets = new HashSet<BoardCell>();
+		visited = new HashSet<BoardCell>();
+		
+		for(int i = 0; i < numRows; i++) {
+			for (int j = 0; j < numColumns; j++) {
+				grid[i][j] = new BoardCell(i, j);  //initialize each grid piece
+			}
+		}
+		
+		for(int row = 0; row < numRows; row++) {
+			for (int col = 0; col < numColumns; col++) {
+				//check to see if the four blocks around the current cell are valid
+				//if so, add them to their respective adjacency list
+				if((row - 1) >= 0) {  
+					grid[row][col].addAdjacency(grid[row - 1][col]);
+				}
+				if((row + 1) <= 3) {
+					grid[row][col].addAdjacency(grid[row + 1][col]);
+				}
+				if((col - 1) >= 0) {
+					grid[row][col].addAdjacency(grid[row][col - 1]);
+				}
+				if((col + 1) <= 3) {
+					grid[row][col].addAdjacency(grid[row][col + 1]);
+				}
+			}
+		}
 	}
 	// this method returns the only Board
 	public static Board getInstance() {
@@ -32,6 +61,40 @@ public class Board {
 	 * initialize the board (since we are using singleton pattern)
 	 */
 	public void initialize(){
+	}
+	
+	public void calcTargets(BoardCell startCell, int pathLength) {
+		//visited and targets already initialized in the constructor
+		visited.add(startCell);
+		findAllTargets(startCell, pathLength);
+	}
+	
+	public void findAllTargets(BoardCell startCell, int pathLength) {
+		Set<BoardCell> adjList = startCell.getAdjList();
+		for(BoardCell adjCell : adjList) {
+			if(!visited.contains(adjCell)) {   //only want unused adjCells
+				visited.add(adjCell);
+				if(adjCell.isRoom()) {      //get rid of all movement - hence the if-else on this
+					targets.add(adjCell);
+				}
+				else {  //don't want lower part of code to run if the adjCell is a room
+					if(pathLength == 1) {
+						if(!adjCell.getOccupied()) {  //only add if not occupied
+							targets.add(adjCell);
+						}
+					} 
+					else {
+						findAllTargets(adjCell, pathLength - 1);
+					}
+				}
+				visited.remove(adjCell); 
+			}
+			
+		}
+	}
+	
+	public BoardCell getCell(int row, int column) {
+		return grid[row][column];
 	}
 	
 	public void loadSetupConfig() {}
@@ -44,6 +107,21 @@ public class Board {
 	}
 	
 
+	public Room getRoom(char c) {
+		return new Room();
+	}
+	
+	public Room getRoom(BoardCell cell) {
+		return new Room();
+	}
+	
+	public int getNumRows() {
+		return numRows;
+	}
+	
+	public int getNumColumns() {
+		return numColumns;
+	}
 	
 	
 }
