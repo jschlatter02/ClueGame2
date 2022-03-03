@@ -2,10 +2,13 @@ package clueGame;
 
 import java.util.*;
 
+import experiments.TestBoardCell;
+
 public class BoardCell {
 	private int row;
 	private int col;
 	private char initial;
+	private boolean isRoom, isOccupied;
 	private DoorDirection doorDirection;
 	private boolean roomLabel;
 	private boolean roomCenter;
@@ -16,6 +19,9 @@ public class BoardCell {
 		
 	}
 	
+	public void addAdjacency(BoardCell cell) {
+		adjList.add(cell);
+	}
 	
 	public DoorDirection getDoorDirection() {
 		return doorDirection;
@@ -35,6 +41,18 @@ public class BoardCell {
 	
 	public char getSecretPassage() {
 		return secretPassage;
+	}
+
+	public Set<BoardCell> getAdjList() {
+		return adjList;
+	}
+
+	public boolean isRoom() {
+		return isRoom;
+	}
+
+	public boolean getOccupied() {
+		return isOccupied;
 	}
 
 	

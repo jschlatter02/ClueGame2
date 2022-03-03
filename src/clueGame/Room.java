@@ -16,7 +16,7 @@ public class Room {
 
 	
 	public String getName() {
-		return "";
+		return name;
 	}
 	
 	

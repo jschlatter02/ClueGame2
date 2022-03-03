@@ -24,6 +24,15 @@ public class Board {
 	// constructor is private to ensure only one can be created
 	private Board() {
 		super() ;
+	}
+	// this method returns the only Board
+	public static Board getInstance() {
+		return theInstance;
+	}
+	/*
+	 * initialize the board (since we are using singleton pattern)
+	 */
+	public void initialize(){
 		grid = new BoardCell[numRows][numColumns];
 		targets = new HashSet<BoardCell>();
 		visited = new HashSet<BoardCell>();
@@ -52,15 +61,6 @@ public class Board {
 				}
 			}
 		}
-	}
-	// this method returns the only Board
-	public static Board getInstance() {
-		return theInstance;
-	}
-	/*
-	 * initialize the board (since we are using singleton pattern)
-	 */
-	public void initialize(){
 	}
 	
 	public void calcTargets(BoardCell startCell, int pathLength) {

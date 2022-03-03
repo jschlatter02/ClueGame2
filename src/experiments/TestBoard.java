@@ -3,21 +3,21 @@ package experiments;
 import java.util.*;
 
 public class TestBoard {
-	private BoardCell[][] grid;
-	private Set<BoardCell> targets;
-	private Set<BoardCell> visited;
+	private TestBoardCell[][] grid;
+	private Set<TestBoardCell> targets;
+	private Set<TestBoardCell> visited;
 	
 	final static int COLS = 4;
 	final static int ROWS = 4;
 	
 	public TestBoard () {
-		grid = new BoardCell[ROWS][COLS];
-		targets = new HashSet<BoardCell>();
-		visited = new HashSet<BoardCell>();
+		grid = new TestBoardCell[ROWS][COLS];
+		targets = new HashSet<TestBoardCell>();
+		visited = new HashSet<TestBoardCell>();
 		
 		for(int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLS; j++) {
-				grid[i][j] = new BoardCell(i, j);  //initialize each grid piece
+				grid[i][j] = new TestBoardCell(i, j);  //initialize each grid piece
 			}
 		}
 		
@@ -41,19 +41,19 @@ public class TestBoard {
 		}
 	}
 	
-	public void calcTargets(BoardCell startCell, int pathLength) {
+	public void calcTargets(TestBoardCell startCell, int pathLength) {
 		//visited and targets already initialized in the constructor
 		visited.add(startCell);
 		findAllTargets(startCell, pathLength);
 	}
 	
-	public Set<BoardCell> getTargets() {
+	public Set<TestBoardCell> getTargets() {
 		return targets;
 	}
 	
-	public void findAllTargets(BoardCell startCell, int pathLength) {
-		Set<BoardCell> adjList = startCell.getAdjList();
-		for(BoardCell adjCell : adjList) {
+	public void findAllTargets(TestBoardCell startCell, int pathLength) {
+		Set<TestBoardCell> adjList = startCell.getAdjList();
+		for(TestBoardCell adjCell : adjList) {
 			if(!visited.contains(adjCell)) {   //only want unused adjCells
 				visited.add(adjCell);
 				if(adjCell.isRoom()) {      //get rid of all movement - hence the if-else on this
@@ -76,7 +76,7 @@ public class TestBoard {
 	}
 	
 	
-	public BoardCell getCell(int row, int column) {
+	public TestBoardCell getCell(int row, int column) {
 		return grid[row][column];
 	}
 	
