@@ -15,8 +15,10 @@ public class BoardCell {
 	private char secretPassage;
 	private Set<BoardCell> adjList;
 	
-	public BoardCell(int row, int col) {
-		
+	public BoardCell(int row, int column) {
+		this.row = row;
+		col = column;
+		adjList = new HashSet<BoardCell>();
 	}
 	
 	public void addAdjacency(BoardCell cell) {

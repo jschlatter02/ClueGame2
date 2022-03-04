@@ -1,5 +1,7 @@
 package clueGame;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
 
 import experiments.TestBoardCell;
@@ -11,8 +13,8 @@ public class Board {
 	private Set<BoardCell> targets;
 	private Set<BoardCell> visited;
 	
-	private int numRows;
-	private int numColumns;
+	private int numRows = 26;
+	private int numColumns = 26;
 	
 	private String layoutConfigFile;
 	private String setupConfigFile;
@@ -36,6 +38,7 @@ public class Board {
 		grid = new BoardCell[numRows][numColumns];
 		targets = new HashSet<BoardCell>();
 		visited = new HashSet<BoardCell>();
+		
 		
 		for(int i = 0; i < numRows; i++) {
 			for (int j = 0; j < numColumns; j++) {
