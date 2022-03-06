@@ -1,6 +1,7 @@
 package clueGame;
 
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
 
 import experiments.TestBoardCell;
@@ -38,12 +39,19 @@ public class Board {
 		targets = new HashSet<BoardCell>();
 		visited = new HashSet<BoardCell>();
 		
+		try {
+			loadSetupConfig();
+		} catch (BadConfigFormatException e) {
+			System.out.println("nice");
+		}
 		
 		for(int i = 0; i < numRows; i++) {
 			for (int j = 0; j < numColumns; j++) {
 				grid[i][j] = new BoardCell(i, j);  //initialize each grid piece
 			}
 		}
+		
+		
 		
 		for(int row = 0; row < numRows; row++) {
 			for (int col = 0; col < numColumns; col++) {
@@ -99,9 +107,38 @@ public class Board {
 		return grid[row][column];
 	}
 	
-	public void loadSetupConfig() {}
+	public void loadSetupConfig() throws BadConfigFormatException{
+		roomMap = new HashMap<Character, Room>();
+		setupConfigFile = "data/" + setupConfigFile;
+		FileReader reader = null;
+		Scanner setupScanner = null;
+		try {
+			reader = new FileReader(setupConfigFile);
+			setupScanner = new Scanner(reader);
+		} catch (FileNotFoundException e) {
+			System.out.println("The file does not exist in the directory. Retry with a new file.");
+		}
+		
+		String[] setupArray = new String[3];
+		while (setupScanner.hasNextLine()) {
+			String input = setupScanner.nextLine();
+			if (input.contains(",")) {
+				setupArray = input.split(", ");
+				if (setupArray[0].equals("Room") || setupArray[0].equals("Space")) {
+					String name = setupArray[1];
+					char character = setupArray[2].charAt(0);
+					roomMap.put(character, new Room(name));
+				} else {
+					throw new BadConfigFormatException("The specified line does not have the right room format. Retry with a new file.");
+				}
+			}
+		}
+		
+	}
 	
-	public void loadLayoutConfig() {}
+	public void loadLayoutConfig() {
+		
+	}
 	
 	public void setConfigFiles(String layoutConfigFile, String setupConfigFile) {
 		this.layoutConfigFile = layoutConfigFile;
@@ -110,11 +147,11 @@ public class Board {
 	
 
 	public Room getRoom(char c) {
-		return new Room();
+		return roomMap.get(c);
 	}
 	
 	public Room getRoom(BoardCell cell) {
-		return new Room();
+		return null;
 	}
 	
 	public int getNumRows() {
@@ -125,5 +162,12 @@ public class Board {
 		return numColumns;
 	}
 	
-	
+	public static void main(String[] args) {
+		// Board is singleton, get the only instance
+		Board board = Board.getInstance();
+		// set the file names to use my config files
+		board.setConfigFiles("ClueLayout306.csv", "ClueSetup306.txt");
+		// Initialize will load BOTH config files
+		board.initialize();
+	}
 }
