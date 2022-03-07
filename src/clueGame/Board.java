@@ -13,8 +13,8 @@ public class Board {
 	private Set<BoardCell> targets;
 	private Set<BoardCell> visited;
 	
-	private int numRows = 26;
-	private int numColumns = 26;
+	private int numRows;
+	private int numColumns;
 	
 	private String layoutConfigFile;
 	private String setupConfigFile;
@@ -22,6 +22,10 @@ public class Board {
 	private static Board theInstance = new Board();
 	
 	private Map<Character, Room> roomMap;
+	
+	FileReader reader = null;
+	Scanner setupScanner = null;
+	
 
 	// constructor is private to ensure only one can be created
 	private Board() {
@@ -35,7 +39,6 @@ public class Board {
 	 * initialize the board (since we are using singleton pattern)
 	 */
 	public void initialize(){
-		grid = new BoardCell[numRows][numColumns];
 		targets = new HashSet<BoardCell>();
 		visited = new HashSet<BoardCell>();
 		
@@ -43,12 +46,6 @@ public class Board {
 			loadSetupConfig();
 		} catch (BadConfigFormatException e) {
 			System.out.println("nice");
-		}
-		
-		for(int i = 0; i < numRows; i++) {
-			for (int j = 0; j < numColumns; j++) {
-				grid[i][j] = new BoardCell(i, j);  //initialize each grid piece
-			}
 		}
 		
 		
@@ -110,8 +107,7 @@ public class Board {
 	public void loadSetupConfig() throws BadConfigFormatException{
 		roomMap = new HashMap<Character, Room>();
 		setupConfigFile = "data/" + setupConfigFile;
-		FileReader reader = null;
-		Scanner setupScanner = null;
+		
 		try {
 			reader = new FileReader(setupConfigFile);
 			setupScanner = new Scanner(reader);
@@ -133,11 +129,47 @@ public class Board {
 				}
 			}
 		}
-		
 	}
 	
-	public void loadLayoutConfig() {
+	public void loadLayoutConfig() throws BadConfigFormatException {
+		ArrayList<String[]> symbolList = new ArrayList<String[]>();
+		layoutConfigFile = "data/" + layoutConfigFile;
+		try {
+			reader = new FileReader(layoutConfigFile);
+			setupScanner = new Scanner(reader);
+		} catch (FileNotFoundException e) {
+			System.out.println("The file does not exist in the directory. Retry with a new file.");
+		}
 		
+		String input = setupScanner.nextLine();
+		String[] symbols = input.split(",");
+		symbolList.add(symbols);
+		numColumns = symbols.length;	
+		
+		while (setupScanner.hasNextLine()) {
+			input = setupScanner.nextLine();
+			symbols = input.split(",");
+			symbolList.add(symbols);
+			
+			if(symbols.length != numColumns) {
+				throw new BadConfigFormatException("One of the rows does not have the right amount of columns.");
+			}
+		}
+		numRows = symbolList.size();
+		grid = new BoardCell[numRows][numColumns];
+
+		for(int i = 0; i < numRows; i++) {
+			for (int j = 0; j < numColumns; j++) {
+				grid[i][j] = new BoardCell(i, j);  //initialize each grid piece
+			}
+		}
+		
+		for(int i = 0; i < numRows; i++) {
+			for (int j = 0; j < numColumns; j++) {
+				String roomSymbol = symbolList.get(i)[j];
+				grid[i][j].setInitial(roomSymbol.charAt(0)); //initialize each grid piece
+			}
+		}
 	}
 	
 	public void setConfigFiles(String layoutConfigFile, String setupConfigFile) {

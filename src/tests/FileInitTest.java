@@ -3,6 +3,7 @@ package tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
@@ -45,37 +46,32 @@ class FileInitTest {
 		for (int row = 0; row < board.getNumRows(); row++)
 			for (int col = 0; col < board.getNumColumns(); col++) {
 				BoardCell cell = board.getCell(row, col);
-				if (cell.isDoorway()) {
+				if (cell.isDoorway())
 					numDoors++;
-				}
 			}
 		Assert.assertEquals(15, numDoors);
 	}
 	
 	@Test
 	public void testNumberOfRooms() {
-		//checks to see if the correct amount of center pieces is there
 		int numCenter = 0;
         for (int row = 0; row < board.getNumRows(); row++)
             for (int col = 0; col < board.getNumColumns(); col++) {
                 BoardCell cell = board.getCell(row, col);
-                if (cell.isRoomCenter()) {
+                if (cell.isRoomCenter())
                     numCenter++;
-                }
             }
         Assert.assertEquals(9, numCenter); 
 	}
 	
 	@Test
 	public void testNumberOfLabels() {
-		//checks to see if the correct amount of label pieces is there
 		int numLabels = 0;
         for (int row = 0; row < board.getNumRows(); row++)
             for (int col = 0; col < board.getNumColumns(); col++) {
                 BoardCell cell = board.getCell(row, col);
-                if (cell.isLabel()) {
+                if (cell.isLabel())
                     numLabels++;
-                }
             }
         Assert.assertEquals(9, numLabels); 
 	}

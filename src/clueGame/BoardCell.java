@@ -8,6 +8,7 @@ public class BoardCell {
 	private int row;
 	private int col;
 	private char initial;
+
 	private boolean isRoom, isOccupied;
 	private DoorDirection doorDirection;
 	private boolean roomLabel;
@@ -19,6 +20,10 @@ public class BoardCell {
 		this.row = row;
 		col = column;
 		adjList = new HashSet<BoardCell>();
+	}
+	
+	public void setInitial(char initial) {
+		this.initial = initial;
 	}
 	
 	public void addAdjacency(BoardCell cell) {
