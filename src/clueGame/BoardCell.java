@@ -103,5 +103,9 @@ public class BoardCell {
 		return isOccupied;
 	}
 
+	public void setOccupied(boolean occupied) {
+		isOccupied = occupied;
+	}
+
 	
 }

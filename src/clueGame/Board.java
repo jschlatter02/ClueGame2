@@ -118,11 +118,12 @@ public class Board {
 			System.out.println("The file does not exist in the directory. Retry with a new file.");
 		}
 
-		String[] setupArray = new String[3];
+		String[] setupArray = new String[3]; //will always have 3 so ok to have this random value
 		while (setupScanner.hasNextLine()) {
 			String input = setupScanner.nextLine();
 			if (input.contains(",")) {
-				setupArray = input.split(", ");
+				setupArray = input.split(", "); //holds room, name, and label
+				//space included since file has a space before name and label
 				if (setupArray[0].equals("Room") || setupArray[0].equals("Space")) {
 					String name = setupArray[1];
 					char character = setupArray[2].charAt(0);
@@ -152,12 +153,14 @@ public class Board {
 				grid[i][j] = new BoardCell(i, j);  //initialize each grid piece
 			}
 		}
-
+		
+		//sets initial, roomCenter/Label, etc for each board piece
 		for(int i = 0; i < numRows; i++) {
 			for (int j = 0; j < numColumns; j++) {
-				String roomSymbol = symbolList.get(i)[j];
+				String roomSymbol = symbolList.get(i)[j]; //variable names for readability
 				BoardCell thisCell = grid[i][j];
 				if (roomMap.containsKey(roomSymbol.charAt(0))) {
+					//made a new method so we didn't have to use a ton of setters
 					thisCell.setBoardCells(roomSymbol, roomMap);
 				} else {
 					throw new BadConfigFormatException("This csv file has an invalid room label. Retry with a new file");
@@ -169,20 +172,22 @@ public class Board {
 	private void readLayoutConfig(ArrayList<String[]> symbolList) throws BadConfigFormatException {
 		String input = setupScanner.nextLine();
 		String[] symbols = input.split(",");
+		//each value in the ArrayList holds one full row
 		symbolList.add(symbols);
-		numColumns = symbols.length;	
+		numColumns = symbols.length; //can use initial array length to check every other array
+		//they must all be consistent to have a valid board
 
 		while (setupScanner.hasNextLine()) {
 			input = setupScanner.nextLine();
 			symbols = input.split(",");
 			symbolList.add(symbols);
 
-			if(symbols.length != numColumns) {
+			if(symbols.length != numColumns) { //check for bad columns
 				throw new BadConfigFormatException("One of the rows does not have the right amount of columns.");
 			}
 		}
 
-		numRows = symbolList.size();
+		numRows = symbolList.size();  //ArrayList size determines amount of rows
 	}
 
 	public void setConfigFiles(String layoutConfigFile, String setupConfigFile) {
@@ -208,12 +213,12 @@ public class Board {
 		return numColumns;
 	}
 
-	public static void main(String[] args) {
-		// Board is singleton, get the only instance
-		Board board = Board.getInstance();
-		// set the file names to use my config files
-		board.setConfigFiles("ClueLayout306.csv", "ClueSetup306.txt");
-		// Initialize will load BOTH config files
-		board.initialize();
+	public Set<BoardCell> getAdjList(int row, int col) {
+		return grid[row][col].getAdjList();
 	}
+
+	public Set<BoardCell> getTargets() {
+		return targets;
+	}
+
 }
