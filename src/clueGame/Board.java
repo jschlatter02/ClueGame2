@@ -3,34 +3,27 @@ package clueGame;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
-
 import experiments.TestBoardCell;
-
-
 
 public class Board {
 	private BoardCell[][] grid;
 	private Set<BoardCell> targets;
 	private Set<BoardCell> visited;
-	
 	private int numRows;
 	private int numColumns;
-	
 	private String layoutConfigFile;
 	private String setupConfigFile;
-	
 	private static Board theInstance = new Board();
-	
 	private Map<Character, Room> roomMap;
-	
-	FileReader reader = null;
-	Scanner setupScanner = null;
-	
+	private FileReader reader = null;
+	private Scanner setupScanner = null;
+
 
 	// constructor is private to ensure only one can be created
 	private Board() {
 		super() ;
 	}
+	
 	// this method returns the only Board
 	public static Board getInstance() {
 		return theInstance;
@@ -41,19 +34,25 @@ public class Board {
 	public void initialize(){
 		targets = new HashSet<BoardCell>();
 		visited = new HashSet<BoardCell>();
-		
+
 		try {
 			loadSetupConfig();
 		} catch (BadConfigFormatException e) {
 			System.out.println(e.getMessage());
 		}
-		
+
 		try {
 			loadLayoutConfig();
 		} catch (BadConfigFormatException e) {
 			System.out.println(e.getMessage());
 		}
-		
+
+		createAdjacencyList();
+	}
+
+	
+	// creates the adjacency list.
+	private void createAdjacencyList() {
 		for(int row = 0; row < numRows; row++) {
 			for (int col = 0; col < numColumns; col++) {
 				//check to see if the four blocks around the current cell are valid
@@ -61,25 +60,25 @@ public class Board {
 				if((row - 1) >= 0) {  
 					grid[row][col].addAdjacency(grid[row - 1][col]);
 				}
-				if((row + 1) <= 3) {
+				if((row + 1) <= numRows - 1) {
 					grid[row][col].addAdjacency(grid[row + 1][col]);
 				}
 				if((col - 1) >= 0) {
 					grid[row][col].addAdjacency(grid[row][col - 1]);
 				}
-				if((col + 1) <= 3) {
+				if((col + 1) <= numColumns - 1) {
 					grid[row][col].addAdjacency(grid[row][col + 1]);
 				}
 			}
 		}
 	}
-	
+
 	public void calcTargets(BoardCell startCell, int pathLength) {
 		//visited and targets already initialized in the constructor
 		visited.add(startCell);
 		findAllTargets(startCell, pathLength);
 	}
-	
+
 	public void findAllTargets(BoardCell startCell, int pathLength) {
 		Set<BoardCell> adjList = startCell.getAdjList();
 		for(BoardCell adjCell : adjList) {
@@ -100,25 +99,25 @@ public class Board {
 				}
 				visited.remove(adjCell); 
 			}
-			
+
 		}
 	}
-	
+
 	public BoardCell getCell(int row, int column) {
 		return grid[row][column];
 	}
-	
+
 	public void loadSetupConfig() throws BadConfigFormatException{
 		roomMap = new HashMap<Character, Room>();
 		setupConfigFile = "data/" + setupConfigFile;
-		
+
 		try {
 			reader = new FileReader(setupConfigFile);
 			setupScanner = new Scanner(reader);
 		} catch (FileNotFoundException e) {
 			System.out.println("The file does not exist in the directory. Retry with a new file.");
 		}
-		
+
 		String[] setupArray = new String[3];
 		while (setupScanner.hasNextLine()) {
 			String input = setupScanner.nextLine();
@@ -134,7 +133,7 @@ public class Board {
 			}
 		}
 	}
-	
+
 	public void loadLayoutConfig() throws BadConfigFormatException {
 		ArrayList<String[]> symbolList = new ArrayList<String[]>();
 		layoutConfigFile = "data/" + layoutConfigFile;
@@ -144,23 +143,8 @@ public class Board {
 		} catch (FileNotFoundException e) {
 			System.out.println("The file does not exist in the directory. Retry with a new file.");
 		}
-		
-		String input = setupScanner.nextLine();
-		String[] symbols = input.split(",");
-		symbolList.add(symbols);
-		numColumns = symbols.length;	
-		
-		while (setupScanner.hasNextLine()) {
-			input = setupScanner.nextLine();
-			symbols = input.split(",");
-			symbolList.add(symbols);
-			
-			if(symbols.length != numColumns) {
-				throw new BadConfigFormatException("One of the rows does not have the right amount of columns.");
-			}
-		}
-		
-		numRows = symbolList.size();
+
+		readLayoutConfig(symbolList);
 		grid = new BoardCell[numRows][numColumns];
 
 		for(int i = 0; i < numRows; i++) {
@@ -168,7 +152,7 @@ public class Board {
 				grid[i][j] = new BoardCell(i, j);  //initialize each grid piece
 			}
 		}
-		
+
 		for(int i = 0; i < numRows; i++) {
 			for (int j = 0; j < numColumns; j++) {
 				String roomSymbol = symbolList.get(i)[j];
@@ -181,30 +165,49 @@ public class Board {
 			}
 		}
 	}
-	
+
+	private void readLayoutConfig(ArrayList<String[]> symbolList) throws BadConfigFormatException {
+		String input = setupScanner.nextLine();
+		String[] symbols = input.split(",");
+		symbolList.add(symbols);
+		numColumns = symbols.length;	
+
+		while (setupScanner.hasNextLine()) {
+			input = setupScanner.nextLine();
+			symbols = input.split(",");
+			symbolList.add(symbols);
+
+			if(symbols.length != numColumns) {
+				throw new BadConfigFormatException("One of the rows does not have the right amount of columns.");
+			}
+		}
+
+		numRows = symbolList.size();
+	}
+
 	public void setConfigFiles(String layoutConfigFile, String setupConfigFile) {
 		this.layoutConfigFile = layoutConfigFile;
 		this.setupConfigFile = setupConfigFile;
 	}
-	
+
 
 	public Room getRoom(char c) {
 		return roomMap.get(c);
 	}
-	
+
 	public Room getRoom(BoardCell cell) {
 		char label = cell.getInitial();
 		return roomMap.get(label);
 	}
-	
+
 	public int getNumRows() {
 		return numRows;
 	}
-	
+
 	public int getNumColumns() {
 		return numColumns;
 	}
-	
+
 	public static void main(String[] args) {
 		// Board is singleton, get the only instance
 		Board board = Board.getInstance();
