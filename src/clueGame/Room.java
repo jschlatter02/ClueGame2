@@ -8,6 +8,14 @@ public class Room {
 	
 
 	
+	public void setCenterCell(BoardCell centerCell) {
+		this.centerCell = centerCell;
+	}
+
+	public void setLabelCell(BoardCell labelCell) {
+		this.labelCell = labelCell;
+	}
+
 	public Room(String name) {
 		this.name = name;
 	}

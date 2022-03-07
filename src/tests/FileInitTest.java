@@ -89,19 +89,19 @@ class FileInitTest {
 		assertTrue( room != null );
 		assertEquals( room.getName(), "Bathroom" ) ;
 		assertTrue( room.getCenterCell() == cell );  // tests for center cell of Bathroom.
-		assertFalse( cell.isRoomCenter());
+		assertTrue( cell.isRoomCenter());
 		
 		cell = board.getCell(0, 13);
 		room = board.getRoom( cell ) ;
 		assertTrue( room != null );
-		assertEquals( room.getName(), "Office Room" ) ;	
+		assertEquals( room.getName(), "Office" ) ;	
 		assertTrue( cell.isLabel() );			// tests for label of Office Room.
 		
 		cell = board.getCell(11, 24);
 		room = board.getRoom( cell ) ;
 		assertTrue( room != null );
 		assertEquals( room.getName(), "Study Room" ) ;	
-		assertTrue( cell.getSecretPassage() == 'K' );	
+		assertTrue( cell.getSecretPassage() == 'G' );	
 	}
 	
 	@Test

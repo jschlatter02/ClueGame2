@@ -2,16 +2,14 @@ package clueGame;
 
 import java.util.*;
 
-import experiments.TestBoardCell;
 
 public class BoardCell {
 	private int row;
 	private int col;
 	private char initial;
-
 	private boolean isRoom, isOccupied;
 	private DoorDirection doorDirection;
-	private boolean roomLabel;
+	private boolean roomLabel, doorway;
 	private boolean roomCenter;
 	private char secretPassage;
 	private Set<BoardCell> adjList;
@@ -30,6 +28,45 @@ public class BoardCell {
 		adjList.add(cell);
 	}
 	
+	public void setBoardCells(String roomSymbol, Map<Character,Room> roomMap) {
+		initial = roomSymbol.charAt(0);
+		if (roomSymbol.length() == 2) {
+			switch(roomSymbol.charAt(1)) {
+			case '#':
+				roomLabel = true;
+				roomMap.get(roomSymbol.charAt(0)).setLabelCell(this);
+				break;
+			case '*':
+				roomCenter = true;
+				roomMap.get(roomSymbol.charAt(0)).setCenterCell(this);
+				break;
+			case '^':
+				doorDirection = DoorDirection.UP;
+				isRoom = true;
+				doorway = true;
+				break;
+			case '<':
+				doorDirection = DoorDirection.LEFT;
+				isRoom = true;
+				doorway = true;
+				break;
+			case '>':
+				doorDirection = DoorDirection.RIGHT;
+				isRoom = true;
+				doorway = true;
+				break;
+			case 'v':
+				doorDirection = DoorDirection.DOWN;
+				isRoom = true;
+				doorway = true;
+				break;
+			default:
+				secretPassage = roomSymbol.charAt(1);
+				break;
+			}
+		}
+	}
+
 	public DoorDirection getDoorDirection() {
 		return doorDirection;
 	}
@@ -42,8 +79,12 @@ public class BoardCell {
 		return roomCenter;
 	}
 	
+	public char getInitial() {
+		return initial;
+	}
+
 	public boolean isDoorway() {
-		return true;
+		return doorway;
 	}
 	
 	public char getSecretPassage() {

@@ -45,10 +45,14 @@ public class Board {
 		try {
 			loadSetupConfig();
 		} catch (BadConfigFormatException e) {
-			System.out.println("nice");
+			System.out.println(e.getMessage());
 		}
 		
-		
+		try {
+			loadLayoutConfig();
+		} catch (BadConfigFormatException e) {
+			System.out.println(e.getMessage());
+		}
 		
 		for(int row = 0; row < numRows; row++) {
 			for (int col = 0; col < numColumns; col++) {
@@ -155,6 +159,7 @@ public class Board {
 				throw new BadConfigFormatException("One of the rows does not have the right amount of columns.");
 			}
 		}
+		
 		numRows = symbolList.size();
 		grid = new BoardCell[numRows][numColumns];
 
@@ -167,7 +172,12 @@ public class Board {
 		for(int i = 0; i < numRows; i++) {
 			for (int j = 0; j < numColumns; j++) {
 				String roomSymbol = symbolList.get(i)[j];
-				grid[i][j].setInitial(roomSymbol.charAt(0)); //initialize each grid piece
+				BoardCell thisCell = grid[i][j];
+				if (roomMap.containsKey(roomSymbol.charAt(0))) {
+					thisCell.setBoardCells(roomSymbol, roomMap);
+				} else {
+					throw new BadConfigFormatException("This csv file has an invalid room label. Retry with a new file");
+				}
 			}
 		}
 	}
@@ -183,7 +193,8 @@ public class Board {
 	}
 	
 	public Room getRoom(BoardCell cell) {
-		return null;
+		char label = cell.getInitial();
+		return roomMap.get(label);
 	}
 	
 	public int getNumRows() {
