@@ -7,7 +7,7 @@ public class BoardCell {
 	private int row;
 	private int col;
 	private char initial;
-	private boolean isRoom, isOccupied;
+	private boolean isRoom, isOccupied, hasSecretPassage;
 	private DoorDirection doorDirection;
 	private boolean roomLabel, doorway;
 	private boolean roomCenter;
@@ -59,6 +59,7 @@ public class BoardCell {
 				break;
 			default:
 				secretPassage = roomSymbol.charAt(1);
+				hasSecretPassage = true;
 				break;
 			}
 		}
@@ -103,6 +104,12 @@ public class BoardCell {
 	public void setOccupied(boolean occupied) {
 		isOccupied = occupied;
 	}
+
+	public boolean isSecretPassage() {
+		return hasSecretPassage;
+	}
+	
+	
 
 	
 }

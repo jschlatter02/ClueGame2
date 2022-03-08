@@ -79,11 +79,23 @@ public class Board {
 				BoardCell centerCell = roomMap.get(initial).getCenterCell();
 				thisCell.addAdjacency(centerCell);
 				centerCell.addAdjacency(thisCell);
+				
 			} else if (initial == 'W') {
 				thisCell.addAdjacency(adjCell);
 			}
 		} else if (thisCell.getInitial() == 'W') {
+			if(adjCell.getInitial() == 'W') {
+				thisCell.addAdjacency(adjCell);
+			}
+		} else if(thisCell.isSecretPassage()) {
+			char roomInitial = thisCell.getInitial();
+			char secretPassageInitial = thisCell.getSecretPassage();
 			
+			BoardCell centerCell = roomMap.get(roomInitial).getCenterCell();
+			BoardCell passageCenterCell = roomMap.get(secretPassageInitial).getCenterCell();
+			
+			centerCell.addAdjacency(passageCenterCell);
+			passageCenterCell.addAdjacency(centerCell);
 		}
 	}
 
