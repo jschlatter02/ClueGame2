@@ -39,25 +39,22 @@ public class BoardCell {
 			case '*':
 				roomCenter = true;
 				roomMap.get(roomSymbol.charAt(0)).setCenterCell(this);
+				isRoom = true;
 				break;
 			case '^':
 				doorDirection = DoorDirection.UP;
-				isRoom = true;
 				doorway = true;
 				break;
 			case '<':
 				doorDirection = DoorDirection.LEFT;
-				isRoom = true;
 				doorway = true;
 				break;
 			case '>':
 				doorDirection = DoorDirection.RIGHT;
-				isRoom = true;
 				doorway = true;
 				break;
 			case 'v':
 				doorDirection = DoorDirection.DOWN;
-				isRoom = true;
 				doorway = true;
 				break;
 			default:

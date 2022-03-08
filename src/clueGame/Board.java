@@ -55,21 +55,35 @@ public class Board {
 	private void createAdjacencyList() {
 		for(int row = 0; row < numRows; row++) {
 			for (int col = 0; col < numColumns; col++) {
-				//check to see if the four blocks around the current cell are valid
-				//if so, add them to their respective adjacency list
-				if((row - 1) >= 0) {  
-					grid[row][col].addAdjacency(grid[row - 1][col]);
+				BoardCell thisCell = grid[row][col];
+				if((row - 1) >= 0) {
+					addAdjList(thisCell, grid[row - 1][col]);
 				}
 				if((row + 1) <= numRows - 1) {
-					grid[row][col].addAdjacency(grid[row + 1][col]);
+					addAdjList(thisCell, grid[row + 1][col]);
 				}
 				if((col - 1) >= 0) {
-					grid[row][col].addAdjacency(grid[row][col - 1]);
+					addAdjList(thisCell, grid[row][col - 1]);
 				}
 				if((col + 1) <= numColumns - 1) {
-					grid[row][col].addAdjacency(grid[row][col + 1]);
+					addAdjList(thisCell, grid[row][col + 1]);
 				}
 			}
+		}
+	}
+
+	private void addAdjList(BoardCell thisCell, BoardCell adjCell) {
+		if (thisCell.isDoorway()) {
+			char initial = adjCell.getInitial();
+			if (initial != 'W' && initial != 'X') {
+				BoardCell centerCell = roomMap.get(initial).getCenterCell();
+				thisCell.addAdjacency(centerCell);
+				centerCell.addAdjacency(thisCell);
+			} else if (initial == 'W') {
+				thisCell.addAdjacency(adjCell);
+			}
+		} else if (thisCell.getInitial() == 'W') {
+			
 		}
 	}
 
