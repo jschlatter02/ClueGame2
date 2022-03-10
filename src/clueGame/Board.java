@@ -3,7 +3,6 @@ package clueGame;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
-import experiments.TestBoardCell;
 
 public class Board {
 	private BoardCell[][] grid;
@@ -59,6 +58,7 @@ public class Board {
 				if((row - 1) >= 0) {
 					BoardCell adjCell = grid[row - 1][col];
 					if (thisCell.isDoorway()) {
+						//put door direction in parameters so that we can make one method for every direction
 						doorwayAdjacenceList(thisCell, adjCell, DoorDirection.UP);
 					} else if (thisCell.getInitial() == 'W' && adjCell.getInitial() == 'W') {
 						thisCell.addAdjacency(adjCell);
@@ -103,8 +103,11 @@ public class Board {
 	private void doorwayAdjacenceList(BoardCell thisCell, BoardCell adjCell, DoorDirection doorDirection) {
 		char initial = adjCell.getInitial();
 		if (initial != 'W' && initial != 'X' && thisCell.getDoorDirection() == doorDirection) {
+			//only want adjacent doors that actually enter the room
 			BoardCell centerCell = roomMap.get(initial).getCenterCell();
 			thisCell.addAdjacency(centerCell);
+			//add to room adjList because it is easier this way
+			//rooms only want their adjacent doors
 			centerCell.addAdjacency(thisCell);
 		} else if (initial == 'W') {
 			thisCell.addAdjacency(adjCell);
@@ -112,6 +115,7 @@ public class Board {
 	}
 
 	private void addSecretPassage(BoardCell thisCell) {
+		//adds room centers to each secret passage room center cell
 		char roomInitial = thisCell.getInitial();
 		char secretPassageInitial = thisCell.getSecretPassage();
 
@@ -124,7 +128,7 @@ public class Board {
 
 
 	public void calcTargets(BoardCell startCell, int pathLength) {
-		//visited and targets already initialized in the constructor
+		//clear targets and visited because we only have one Board instance
 		visited.clear();
 		visited.add(startCell);
 		targets.clear();
