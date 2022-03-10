@@ -55,10 +55,10 @@ public class Board {
 		for(int row = 0; row < numRows; row++) {
 			for (int col = 0; col < numColumns; col++) {
 				BoardCell thisCell = grid[row][col];
-				if((row - 1) >= 0) {
+				if((row - 1) >= 0) { //upper cell
 					BoardCell adjCell = grid[row - 1][col];
 					if (thisCell.isDoorway()) {
-						//put door direction in parameters so that we can make one method for every direction
+						//put door direction in parameters so that we can have one method that can use any direction
 						doorwayAdjacenceList(thisCell, adjCell, DoorDirection.UP);
 					} else if (thisCell.getInitial() == 'W' && adjCell.getInitial() == 'W') {
 						thisCell.addAdjacency(adjCell);
@@ -66,7 +66,7 @@ public class Board {
 						addSecretPassage(thisCell);
 					}
 				}
-				if((row + 1) <= numRows - 1) {
+				if((row + 1) <= numRows - 1) { //lower cell
 					BoardCell adjCell = grid[row + 1][col];
 					if (thisCell.isDoorway()) {
 						doorwayAdjacenceList(thisCell, adjCell, DoorDirection.DOWN);
@@ -76,7 +76,7 @@ public class Board {
 						addSecretPassage(thisCell);
 					}
 				}
-				if((col - 1) >= 0) {
+				if((col - 1) >= 0) { //left cell
 					BoardCell adjCell = grid[row][col - 1];
 					if (thisCell.isDoorway()) {
 						doorwayAdjacenceList(thisCell, adjCell, DoorDirection.LEFT);
@@ -86,7 +86,7 @@ public class Board {
 						addSecretPassage(thisCell);
 					}
 				}
-				if((col + 1) <= numColumns - 1) {
+				if((col + 1) <= numColumns - 1) { //right cell
 					BoardCell adjCell = grid[row][col + 1];
 					if (thisCell.isDoorway()) {
 						doorwayAdjacenceList(thisCell, adjCell, DoorDirection.RIGHT);
@@ -267,6 +267,7 @@ public class Board {
 	}
 
 	public Set<BoardCell> getAdjList(int row, int col) {
+		//no adjList in Board so we have to call each BoardCell's getter for adj
 		return grid[row][col].getAdjList();
 	}
 
