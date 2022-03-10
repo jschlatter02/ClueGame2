@@ -23,7 +23,7 @@ public class Board {
 	private Board() {
 		super() ;
 	}
-	
+
 	// this method returns the only Board
 	public static Board getInstance() {
 		return theInstance;
@@ -50,7 +50,7 @@ public class Board {
 		createAdjacencyList();
 	}
 
-	
+
 	// creates the adjacency list.
 	private void createAdjacencyList() {
 		for(int row = 0; row < numRows; row++) {
@@ -59,19 +59,9 @@ public class Board {
 				if((row - 1) >= 0) {
 					BoardCell adjCell = grid[row - 1][col];
 					if (thisCell.isDoorway()) {
-						char initial = adjCell.getInitial();
-						if (initial != 'W' && initial != 'X' && thisCell.getDoorDirection() == DoorDirection.UP) {
-							BoardCell centerCell = roomMap.get(initial).getCenterCell();
-							thisCell.addAdjacency(centerCell);
-							centerCell.addAdjacency(thisCell);
-							
-						} else if (initial == 'W') {
-							thisCell.addAdjacency(adjCell);
-						}
-					} else if (thisCell.getInitial() == 'W') {
-						if(adjCell.getInitial() == 'W') {
-							thisCell.addAdjacency(adjCell);
-						}
+						doorwayAdjacenceList(thisCell, adjCell, DoorDirection.UP);
+					} else if (thisCell.getInitial() == 'W' && adjCell.getInitial() == 'W') {
+						thisCell.addAdjacency(adjCell);
 					} else if(thisCell.isSecretPassage()) {
 						addSecretPassage(thisCell);
 					}
@@ -79,19 +69,9 @@ public class Board {
 				if((row + 1) <= numRows - 1) {
 					BoardCell adjCell = grid[row + 1][col];
 					if (thisCell.isDoorway()) {
-						char initial = adjCell.getInitial();
-						if (initial != 'W' && initial != 'X' && thisCell.getDoorDirection() == DoorDirection.DOWN) {
-							BoardCell centerCell = roomMap.get(initial).getCenterCell();
-							thisCell.addAdjacency(centerCell);
-							centerCell.addAdjacency(thisCell);
-							
-						} else if (initial == 'W') {
-							thisCell.addAdjacency(adjCell);
-						}
-					} else if (thisCell.getInitial() == 'W') {
-						if(adjCell.getInitial() == 'W') {
-							thisCell.addAdjacency(adjCell);
-						}
+						doorwayAdjacenceList(thisCell, adjCell, DoorDirection.DOWN);
+					} else if (thisCell.getInitial() == 'W' && adjCell.getInitial() == 'W') {
+						thisCell.addAdjacency(adjCell);
 					} else if(thisCell.isSecretPassage()) {
 						addSecretPassage(thisCell);
 					}
@@ -99,19 +79,9 @@ public class Board {
 				if((col - 1) >= 0) {
 					BoardCell adjCell = grid[row][col - 1];
 					if (thisCell.isDoorway()) {
-						char initial = adjCell.getInitial();
-						if (initial != 'W' && initial != 'X' && thisCell.getDoorDirection() == DoorDirection.LEFT) {
-							BoardCell centerCell = roomMap.get(initial).getCenterCell();
-							thisCell.addAdjacency(centerCell);
-							centerCell.addAdjacency(thisCell);
-							
-						} else if (initial == 'W') {
-							thisCell.addAdjacency(adjCell);
-						}
-					} else if (thisCell.getInitial() == 'W') {
-						if(adjCell.getInitial() == 'W') {
-							thisCell.addAdjacency(adjCell);
-						}
+						doorwayAdjacenceList(thisCell, adjCell, DoorDirection.LEFT);
+					} else if (thisCell.getInitial() == 'W' && adjCell.getInitial() == 'W') {
+						thisCell.addAdjacency(adjCell);
 					} else if(thisCell.isSecretPassage()) {
 						addSecretPassage(thisCell);
 					}
@@ -119,19 +89,9 @@ public class Board {
 				if((col + 1) <= numColumns - 1) {
 					BoardCell adjCell = grid[row][col + 1];
 					if (thisCell.isDoorway()) {
-						char initial = adjCell.getInitial();
-						if (initial != 'W' && initial != 'X' && thisCell.getDoorDirection() == DoorDirection.RIGHT) {
-							BoardCell centerCell = roomMap.get(initial).getCenterCell();
-							thisCell.addAdjacency(centerCell);
-							centerCell.addAdjacency(thisCell);
-							
-						} else if (initial == 'W') {
-							thisCell.addAdjacency(adjCell);
-						}
-					} else if (thisCell.getInitial() == 'W') {
-						if(adjCell.getInitial() == 'W') {
-							thisCell.addAdjacency(adjCell);
-						}
+						doorwayAdjacenceList(thisCell, adjCell, DoorDirection.RIGHT);
+					} else if (thisCell.getInitial() == 'W' && adjCell.getInitial() == 'W') {
+						thisCell.addAdjacency(adjCell);
 					} else if(thisCell.isSecretPassage()) {
 						addSecretPassage(thisCell);
 					}
@@ -140,13 +100,24 @@ public class Board {
 		}
 	}
 
+	private void doorwayAdjacenceList(BoardCell thisCell, BoardCell adjCell, DoorDirection doorDirection) {
+		char initial = adjCell.getInitial();
+		if (initial != 'W' && initial != 'X' && thisCell.getDoorDirection() == doorDirection) {
+			BoardCell centerCell = roomMap.get(initial).getCenterCell();
+			thisCell.addAdjacency(centerCell);
+			centerCell.addAdjacency(thisCell);
+		} else if (initial == 'W') {
+			thisCell.addAdjacency(adjCell);
+		}
+	}
+
 	private void addSecretPassage(BoardCell thisCell) {
 		char roomInitial = thisCell.getInitial();
 		char secretPassageInitial = thisCell.getSecretPassage();
-		
+
 		BoardCell centerCell = roomMap.get(roomInitial).getCenterCell();
 		BoardCell passageCenterCell = roomMap.get(secretPassageInitial).getCenterCell();
-		
+
 		centerCell.addAdjacency(passageCenterCell);
 		passageCenterCell.addAdjacency(centerCell);
 	}
@@ -154,7 +125,9 @@ public class Board {
 
 	public void calcTargets(BoardCell startCell, int pathLength) {
 		//visited and targets already initialized in the constructor
+		visited.clear();
 		visited.add(startCell);
+		targets.clear();
 		findAllTargets(startCell, pathLength);
 	}
 
@@ -166,11 +139,10 @@ public class Board {
 				if(adjCell.isRoom()) {      //get rid of all movement - hence the if-else on this
 					targets.add(adjCell);
 				}
-				else {  //don't want lower part of code to run if the adjCell is a room
-					if(pathLength == 1) {
-						if(!adjCell.getOccupied()) {  //only add if not occupied
-							targets.add(adjCell);
-						}
+				//only add if not occupied
+				else  if (!adjCell.getOccupied()){  //don't want lower part of code to run if the adjCell is a room
+					if(pathLength == 1) {   	
+						targets.add(adjCell);
 					} 
 					else {
 						findAllTargets(adjCell, pathLength - 1);
@@ -178,7 +150,6 @@ public class Board {
 				}
 				visited.remove(adjCell); 
 			}
-
 		}
 	}
 
@@ -232,7 +203,7 @@ public class Board {
 				grid[i][j] = new BoardCell(i, j);  //initialize each grid piece
 			}
 		}
-		
+
 		//sets initial, roomCenter/Label, etc for each board piece
 		for(int i = 0; i < numRows; i++) {
 			for (int j = 0; j < numColumns; j++) {
@@ -265,7 +236,6 @@ public class Board {
 				throw new BadConfigFormatException("One of the rows does not have the right amount of columns.");
 			}
 		}
-
 		numRows = symbolList.size();  //ArrayList size determines amount of rows
 	}
 
