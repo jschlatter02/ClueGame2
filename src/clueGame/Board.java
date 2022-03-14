@@ -36,11 +36,6 @@ public class Board {
 
 		try {
 			loadSetupConfig();
-		} catch (BadConfigFormatException e) {
-			System.out.println(e.getMessage());
-		}
-
-		try {
 			loadLayoutConfig();
 		} catch (BadConfigFormatException e) {
 			System.out.println(e.getMessage());
