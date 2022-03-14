@@ -56,46 +56,28 @@ public class Board {
 				BoardCell thisCell = grid[row][col];
 				if((row - 1) >= 0) { //upper cell
 					BoardCell adjCell = grid[row - 1][col];
-					thisCellChoice(thisCell, adjCell);
+					thisCellChoice(thisCell, adjCell, DoorDirection.UP);
 				}
 				if((row + 1) <= numRows - 1) { //lower cell
 					BoardCell adjCell = grid[row + 1][col];
-					if (thisCell.isDoorway()) {
-						doorwayAdjacenceList(thisCell, adjCell, DoorDirection.DOWN);
-					} else if (thisCell.getInitial() == 'W' && adjCell.getInitial() == 'W') {
-						thisCell.addAdjacency(adjCell);
-					} else if(thisCell.isSecretPassage()) {
-						addSecretPassage(thisCell);
-					}
+					thisCellChoice(thisCell, adjCell, DoorDirection.DOWN);
 				}
 				if((col - 1) >= 0) { //left cell
 					BoardCell adjCell = grid[row][col - 1];
-					if (thisCell.isDoorway()) {
-						doorwayAdjacenceList(thisCell, adjCell, DoorDirection.LEFT);
-					} else if (thisCell.getInitial() == 'W' && adjCell.getInitial() == 'W') {
-						thisCell.addAdjacency(adjCell);
-					} else if(thisCell.isSecretPassage()) {
-						addSecretPassage(thisCell);
-					}
+					thisCellChoice(thisCell, adjCell, DoorDirection.LEFT);
 				}
 				if((col + 1) <= numColumns - 1) { //right cell
 					BoardCell adjCell = grid[row][col + 1];
-					if (thisCell.isDoorway()) {
-						doorwayAdjacenceList(thisCell, adjCell, DoorDirection.RIGHT);
-					} else if (thisCell.getInitial() == 'W' && adjCell.getInitial() == 'W') {
-						thisCell.addAdjacency(adjCell);
-					} else if(thisCell.isSecretPassage()) {
-						addSecretPassage(thisCell);
-					}
+					thisCellChoice(thisCell, adjCell, DoorDirection.RIGHT);
 				}
 			}
 		}
 	}
 
-	private void thisCellChoice(BoardCell thisCell, BoardCell adjCell) {
+	private void thisCellChoice(BoardCell thisCell, BoardCell adjCell, DoorDirection doorDirection) {
 		if (thisCell.isDoorway()) {
 			//put door direction in parameters so that we can have one method that can use any direction
-			doorwayAdjacenceList(thisCell, adjCell, DoorDirection.UP);
+			doorwayAdjacenceList(thisCell, adjCell, doorDirection);
 		} else if (thisCell.getInitial() == 'W' && adjCell.getInitial() == 'W') {
 			thisCell.addAdjacency(adjCell);
 		} else if(thisCell.isSecretPassage()) {
