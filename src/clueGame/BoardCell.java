@@ -102,7 +102,9 @@ public class BoardCell {
 	}
 
 	public void setOccupied(boolean occupied) {
-		isOccupied = occupied;
+		if (!roomCenter) {
+			isOccupied = occupied;
+		}
 	}
 
 	public boolean isSecretPassage() {
