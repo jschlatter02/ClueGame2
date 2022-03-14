@@ -18,7 +18,7 @@ public class Board {
 	
 	// These are not defined locally since two methods uses these instance variables.
 	private FileReader reader = null;
-	private Scanner setupScanner = null;
+	private Scanner scanner = null;
 	
 
 
@@ -166,14 +166,14 @@ public class Board {
 
 		try {
 			reader = new FileReader(setupConfigFile);
-			setupScanner = new Scanner(reader);
+			scanner = new Scanner(reader);
 		} catch (FileNotFoundException e) {
 			System.out.println("The file does not exist in the directory. Retry with a new file.");
 		}
 
 		String[] setupArray = new String[SETUP_FILE_SIZE]; //will always have 3 so ok to have this random value
-		while (setupScanner.hasNextLine()) {
-			String input = setupScanner.nextLine();
+		while (scanner.hasNextLine()) {
+			String input = scanner.nextLine();
 			if (input.contains(",")) {
 				setupArray = input.split(", "); //holds room, name, and label
 				//space included since file has a space before name and label
@@ -193,7 +193,7 @@ public class Board {
 		layoutConfigFile = "data/" + layoutConfigFile;
 		try {
 			reader = new FileReader(layoutConfigFile);
-			setupScanner = new Scanner(reader);
+			scanner = new Scanner(reader);
 		} catch (FileNotFoundException e) {
 			System.out.println("The file does not exist in the directory. Retry with a new file.");
 		}
@@ -223,15 +223,15 @@ public class Board {
 	}
 
 	private void readLayoutConfig(ArrayList<String[]> symbolList) throws BadConfigFormatException {
-		String input = setupScanner.nextLine();
+		String input = scanner.nextLine();
 		String[] symbols = input.split(",");
 		//each value in the ArrayList holds one full row
 		symbolList.add(symbols);
 		numColumns = symbols.length; //can use initial array length to check every other array
 		//they must all be consistent to have a valid board
 
-		while (setupScanner.hasNextLine()) {
-			input = setupScanner.nextLine();
+		while (scanner.hasNextLine()) {
+			input = scanner.nextLine();
 			symbols = input.split(",");
 			symbolList.add(symbols);
 
