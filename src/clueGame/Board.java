@@ -14,9 +14,12 @@ public class Board {
 	private String setupConfigFile;
 	private static Board theInstance = new Board();
 	private Map<Character, Room> roomMap;
+	private final int SETUP_FILE_SIZE = 3;
+	
+	// These are not defined locally since two methods uses these instance variables.
 	private FileReader reader = null;
 	private Scanner setupScanner = null;
-	private final int SETUP_FILE_SIZE = 3;
+	
 
 
 	// constructor is private to ensure only one can be created
