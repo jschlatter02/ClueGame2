@@ -56,14 +56,7 @@ public class Board {
 				BoardCell thisCell = grid[row][col];
 				if((row - 1) >= 0) { //upper cell
 					BoardCell adjCell = grid[row - 1][col];
-					if (thisCell.isDoorway()) {
-						//put door direction in parameters so that we can have one method that can use any direction
-						doorwayAdjacenceList(thisCell, adjCell, DoorDirection.UP);
-					} else if (thisCell.getInitial() == 'W' && adjCell.getInitial() == 'W') {
-						thisCell.addAdjacency(adjCell);
-					} else if(thisCell.isSecretPassage()) {
-						addSecretPassage(thisCell);
-					}
+					thisCellChoice(thisCell, adjCell);
 				}
 				if((row + 1) <= numRows - 1) { //lower cell
 					BoardCell adjCell = grid[row + 1][col];
@@ -96,6 +89,17 @@ public class Board {
 					}
 				}
 			}
+		}
+	}
+
+	private void thisCellChoice(BoardCell thisCell, BoardCell adjCell) {
+		if (thisCell.isDoorway()) {
+			//put door direction in parameters so that we can have one method that can use any direction
+			doorwayAdjacenceList(thisCell, adjCell, DoorDirection.UP);
+		} else if (thisCell.getInitial() == 'W' && adjCell.getInitial() == 'W') {
+			thisCell.addAdjacency(adjCell);
+		} else if(thisCell.isSecretPassage()) {
+			addSecretPassage(thisCell);
 		}
 	}
 
