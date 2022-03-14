@@ -122,7 +122,6 @@ public class Board {
 		BoardCell passageCenterCell = roomMap.get(secretPassageInitial).getCenterCell();
 
 		centerCell.addAdjacency(passageCenterCell);
-		passageCenterCell.addAdjacency(centerCell);
 	}
 
 
