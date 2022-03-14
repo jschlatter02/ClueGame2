@@ -31,17 +31,17 @@ public class BoardCell {
 	public void setBoardCells(String roomSymbol, Map<Character,Room> roomMap) {
 		initial = roomSymbol.charAt(0);
 		if (roomSymbol.length() == 2) {
-			switch(roomSymbol.charAt(1)) {
-			case '#':
+			switch(roomSymbol.charAt(1)) { //check second character
+			case '#': //label cell
 				roomLabel = true;
 				roomMap.get(roomSymbol.charAt(0)).setLabelCell(this);
 				break;
-			case '*':
+			case '*': //center cell
 				roomCenter = true;
 				roomMap.get(roomSymbol.charAt(0)).setCenterCell(this);
 				isRoom = true;
 				break;
-			case '^':
+			case '^': //door directions
 				doorDirection = DoorDirection.UP;
 				doorway = true;
 				break;
@@ -57,7 +57,7 @@ public class BoardCell {
 				doorDirection = DoorDirection.DOWN;
 				doorway = true;
 				break;
-			default:
+			default: //secret passage
 				secretPassage = roomSymbol.charAt(1);
 				hasSecretPassage = true;
 				break;
