@@ -16,6 +16,7 @@ public class Board {
 	private Map<Character, Room> roomMap;
 	private FileReader reader = null;
 	private Scanner setupScanner = null;
+	private final int SETUP_FILE_SIZE = 3;
 
 
 	// constructor is private to ensure only one can be created
@@ -167,7 +168,7 @@ public class Board {
 			System.out.println("The file does not exist in the directory. Retry with a new file.");
 		}
 
-		String[] setupArray = new String[3]; //will always have 3 so ok to have this random value
+		String[] setupArray = new String[SETUP_FILE_SIZE]; //will always have 3 so ok to have this random value
 		while (setupScanner.hasNextLine()) {
 			String input = setupScanner.nextLine();
 			if (input.contains(",")) {
