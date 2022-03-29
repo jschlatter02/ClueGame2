@@ -14,13 +14,15 @@ public class Board {
 	private String setupConfigFile;
 	private static Board theInstance = new Board();
 	private Map<Character, Room> roomMap;
-	private final int SETUP_FILE_SIZE = 3;
 	
-	// These are not defined locally since two methods uses these instance variables.
+	// These are not defined globally since two methods uses these instance variables.
 	private FileReader reader = null;
 	private Scanner scanner = null;
 	
-
+	//card instance variables
+	private ArrayList<Player> players;
+	private ArrayList<Card> deck;
+	
 
 	// constructor is private to ensure only one can be created
 	private Board() {
@@ -156,18 +158,17 @@ public class Board {
 			System.out.println("The file does not exist in the directory. Retry with a new file.");
 		}
 
-		String[] setupArray = new String[SETUP_FILE_SIZE]; //will always have 3 so ok to have this random value
 		while (scanner.hasNextLine()) {
 			String input = scanner.nextLine();
 			if (input.contains(",")) {
-				setupArray = input.split(", "); //holds room, name, and label
+				String [] setupArray = input.split(", "); //holds room, name, and label
 				//space included since file has a space before name and label
 				if (setupArray[0].equals("Room") || setupArray[0].equals("Space")) {
 					String name = setupArray[1];
 					char character = setupArray[2].charAt(0);
 					roomMap.put(character, new Room(name));
 				} else {
-					throw new BadConfigFormatException("The specified line does not have the right room format. Retry with a new file.");
+					throw new BadConfigFormatException("The specified line does not have the right card format. Retry with a new file.");
 				}
 			}
 		}
@@ -226,6 +227,8 @@ public class Board {
 		}
 		numRows = symbolList.size();  //ArrayList size determines amount of rows
 	}
+	
+	public void deal() {}
 
 	public void setConfigFiles(String layoutConfigFile, String setupConfigFile) {
 		this.layoutConfigFile = layoutConfigFile;

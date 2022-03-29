@@ -12,3 +12,18 @@ Room, Game Room, G
 // Other spaces on board
 Space, Unused, X
 Space, Walkway, W
+
+//Weapons and Players
+Human, Aristotle, 0, 7, green
+Computer, Will Smith, 0, 16, red
+Computer, Alan Turing, 8, 23, black
+Computer, Steve Wozniak, 16, 24, magenta
+Computer, John McCarthy, 24, 7, orange
+Computer, Brian Kernighan, 24, 11, yellow
+
+Weapon, Knife
+Weapon, Bow and Arrow
+Weapon, Katana
+Weapon, Musket
+Weapon, Sickle
+Weapon, Spear
