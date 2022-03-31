@@ -150,13 +150,8 @@ public class Board {
 	public void loadSetupConfig() throws BadConfigFormatException{
 		roomMap = new HashMap<Character, Room>();
 		setupConfigFile = "data/" + setupConfigFile;
-		players = new ArrayList<Player>(6);
-		deck = new ArrayList<Card>(21);
-		
-		// Loop to add new human players to players so that it does not throw an IndexNotFoundException.
-		for(int i = 0; i < 6; i++) {
-			players.add(new HumanPlayer());
-		}
+		players = new ArrayList<Player>();
+		deck = new ArrayList<Card>();
 
 		try {
 			reader = new FileReader(setupConfigFile);
@@ -174,9 +169,16 @@ public class Board {
 					String name = setupArray[1];
 					char character = setupArray[2].charAt(0);
 					roomMap.put(character, new Room(name));
-				} else if (setupArray[0].equals("Human")) {
+
+				} else if (setupArray[0].equals("Human")) {  // change ClueSetup.txt to have Player, Human, ......
+					Player humanPlayer = new HumanPlayer(setupArray[1], Integer.parseInt(setupArray[2]), Integer.parseInt(setupArray[3]), setupArray[4]);
+					players.add(humanPlayer);
+					deck.add(new Card(setupArray[1], CardType.PERSON));
 					
 				} else if (setupArray[0].equals("Computer")) {
+					Player computerPlayer = new ComputerPlayer(setupArray[1], Integer.parseInt(setupArray[2]), Integer.parseInt(setupArray[3]), setupArray[4]);
+					players.add(computerPlayer);
+					deck.add(new Card(setupArray[1], CardType.PERSON));
 					
 				} else if (setupArray[0].equals("Weapon")) {
 					

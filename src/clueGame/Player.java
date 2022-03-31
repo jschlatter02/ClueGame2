@@ -4,11 +4,38 @@ import java.awt.Color;
 
 public abstract class Player {
 	private String name;
-	private String color;
+	private Color color;
 	private int row, col;
 	
 	public abstract void updateHand(Card card);
 
+	public Player(String name, int row, int col, String color) {
+		this.name = name;
+		this.row = row;
+		this.col = col;
+		
+		switch(color) {
+			case "green":
+				this.color = Color.GREEN;
+				break;
+			case "red":
+				this.color = Color.RED;
+				break;
+			case "black":
+				this.color = Color.BLACK;
+				break;
+			case "Magenta":
+				this.color = Color.MAGENTA;
+				break;
+			case "orange":
+				this.color = Color.ORANGE;
+				break;
+			case "yellow":
+				this.color = Color.YELLOW;
+				break;
+		}
+	}
+	
 	public String getName() {
 		return name;
 	}
