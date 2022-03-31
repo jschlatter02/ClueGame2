@@ -8,4 +8,9 @@ public abstract class Player {
 	private int row, col;
 	
 	public abstract void updateHand(Card card);
+
+	public String getName() {
+		return name;
+	}
+	
 }

@@ -150,6 +150,13 @@ public class Board {
 	public void loadSetupConfig() throws BadConfigFormatException{
 		roomMap = new HashMap<Character, Room>();
 		setupConfigFile = "data/" + setupConfigFile;
+		players = new ArrayList<Player>(6);
+		deck = new ArrayList<Card>(21);
+		
+		// Loop to add new human players to players so that it does not throw an IndexNotFoundException.
+		for(int i = 0; i < 6; i++) {
+			players.add(new HumanPlayer());
+		}
 
 		try {
 			reader = new FileReader(setupConfigFile);
@@ -167,7 +174,14 @@ public class Board {
 					String name = setupArray[1];
 					char character = setupArray[2].charAt(0);
 					roomMap.put(character, new Room(name));
-				} else {
+				} else if (setupArray[0].equals("Human")) {
+					
+				} else if (setupArray[0].equals("Computer")) {
+					
+				} else if (setupArray[0].equals("Weapon")) {
+					
+				}
+				else {
 					throw new BadConfigFormatException("The specified line does not have the right card format. Retry with a new file.");
 				}
 			}
@@ -243,6 +257,16 @@ public class Board {
 	public Room getRoom(BoardCell cell) {
 		char label = cell.getInitial();
 		return roomMap.get(label);
+	}
+
+	
+	
+	public ArrayList<Player> getPlayers() {
+		return players;
+	}
+
+	public ArrayList<Card> getDeck() {
+		return deck;
 	}
 
 	public int getNumRows() {

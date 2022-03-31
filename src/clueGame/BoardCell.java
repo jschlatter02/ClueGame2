@@ -7,6 +7,7 @@ public class BoardCell {
 	private int row;
 	private int col;
 	private char initial;
+	
 	private boolean isRoom, isOccupied, hasSecretPassage;
 	private DoorDirection doorDirection;
 	private boolean roomLabel, doorway;
