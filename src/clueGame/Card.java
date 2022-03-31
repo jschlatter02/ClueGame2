@@ -10,6 +10,12 @@ public class Card {
 		this.cardType = cardType;
 	}
 	
+	
+	
+	public CardType getCardType() {
+		return cardType;
+	}
+
 	public boolean equals(Card target) {
 		return true;
 	}

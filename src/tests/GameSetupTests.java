@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import clueGame.Board;
 import clueGame.BoardCell;
+import clueGame.Card;
+import clueGame.CardType;
 import clueGame.Player;
 
 class GameSetupTests {
@@ -35,10 +37,25 @@ class GameSetupTests {
 	
 	
 	@Test
-	void LoadWeaponsTest() {
+	void checkDeck() {
+		ArrayList<Card> deck = board.getDeck();
+		assertTrue(deck.size() == 21);
 		
+		int isRoom = 0, isPlayer = 0, isWeapon = 0;
 		
+		for (Card card : deck) {
+			if (card.getCardType() == CardType.ROOM) {
+				isRoom++;
+			} else if (card.getCardType() == CardType.PERSON) {
+				isPlayer++;
+			} else if (card.getCardType() == CardType.WEAPON) {
+				isWeapon++;
+			}
+		}
 		
+		assertEquals(isRoom, 9);
+		assertEquals(isPlayer, 6);
+		assertEquals(isWeapon, 6);
 		
 	}
 

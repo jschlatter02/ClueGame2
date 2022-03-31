@@ -22,6 +22,7 @@ public class Board {
 	//card instance variables
 	private ArrayList<Player> players;
 	private ArrayList<Card> deck;
+	private Solution theAnswer;
 	
 
 	// constructor is private to ensure only one can be created
@@ -181,7 +182,7 @@ public class Board {
 					deck.add(new Card(setupArray[1], CardType.PERSON));
 					
 				} else if (setupArray[0].equals("Weapon")) {
-					
+					//deck.add(n)
 				}
 				else {
 					throw new BadConfigFormatException("The specified line does not have the right card format. Retry with a new file.");
