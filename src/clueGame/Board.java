@@ -170,6 +170,9 @@ public class Board {
 					String name = setupArray[1];
 					char character = setupArray[2].charAt(0);
 					roomMap.put(character, new Room(name));
+					if (setupArray[0].equals("Room")) {
+						deck.add(new Card(setupArray[1], CardType.ROOM));
+					}
 
 				} else if (setupArray[0].equals("Human")) {  // change ClueSetup.txt to have Player, Human, ......
 					Player humanPlayer = new HumanPlayer(setupArray[1], Integer.parseInt(setupArray[2]), Integer.parseInt(setupArray[3]), setupArray[4]);
@@ -182,7 +185,7 @@ public class Board {
 					deck.add(new Card(setupArray[1], CardType.PERSON));
 					
 				} else if (setupArray[0].equals("Weapon")) {
-					//deck.add(n)
+					deck.add(new Card(setupArray[1], CardType.WEAPON));
 				}
 				else {
 					throw new BadConfigFormatException("The specified line does not have the right card format. Retry with a new file.");
