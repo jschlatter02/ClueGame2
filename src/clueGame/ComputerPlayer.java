@@ -8,6 +8,7 @@ public class ComputerPlayer extends Player{
 
 	@Override
 	public void updateHand(Card card) {
+		hand.add(card);
 	}
 
 }

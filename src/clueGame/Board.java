@@ -47,7 +47,7 @@ public class Board {
 		} catch (BadConfigFormatException e) {
 			System.out.println(e.getMessage());
 		}
-
+		
 		createAdjacencyList();
 	}
 
@@ -248,7 +248,48 @@ public class Board {
 		numRows = symbolList.size();  //ArrayList size determines amount of rows
 	}
 	
-	public void deal() {}
+	public void deal() {
+		Card card;
+		Random random = new Random();
+		int deckIndex;
+		do { //grab random card until it is a room
+			deckIndex = random.nextInt(deck.size());
+			card = deck.get(deckIndex);
+		} while (card.getCardType() != CardType.ROOM);
+		
+		Card roomCard = card;
+		deck.remove(deckIndex);
+		
+		do {//grab random card until it is a player
+			deckIndex = random.nextInt(deck.size());
+			card = deck.get(deckIndex);
+		} while (card.getCardType() != CardType.PERSON);
+		
+		Card playerCard = card;
+		deck.remove(deckIndex);
+		
+		do {//grab random card until it is a weapon
+			deckIndex = random.nextInt(deck.size());
+			card = deck.get(deckIndex);
+		} while (card.getCardType() != CardType.WEAPON);
+		
+		Card weaponCard = card;
+		deck.remove(deckIndex);
+		//card removed from deck so we know that it cannot be drawn by someone else
+		
+		theAnswer = new Solution(roomCard, playerCard, weaponCard);
+		
+		int i = 0;
+		do {
+			deckIndex = random.nextInt(deck.size());
+			Player player = players.get(i);
+			player.updateHand(deck.get(deckIndex));
+			deck.remove(deckIndex);
+			if (player.getHand().size() == 3) { //way to iterate through every player
+				i++;
+			}
+		} while (deck.size() > 0); //want deck to be empty at the end
+	}
 
 	public void setConfigFiles(String layoutConfigFile, String setupConfigFile) {
 		this.layoutConfigFile = layoutConfigFile;
