@@ -174,16 +174,15 @@ public class Board {
 						deck.add(new Card(setupArray[1], CardType.ROOM));
 					}
 
-				} else if (setupArray[0].equals("Human")) {  // change ClueSetup.txt to have Player, Human, ......
-					Player humanPlayer = new HumanPlayer(setupArray[1], Integer.parseInt(setupArray[2]), Integer.parseInt(setupArray[3]), setupArray[4]);
-					players.add(humanPlayer);
-					deck.add(new Card(setupArray[1], CardType.PERSON));
-					
-				} else if (setupArray[0].equals("Computer")) {
-					Player computerPlayer = new ComputerPlayer(setupArray[1], Integer.parseInt(setupArray[2]), Integer.parseInt(setupArray[3]), setupArray[4]);
-					players.add(computerPlayer);
-					deck.add(new Card(setupArray[1], CardType.PERSON));
-					
+				} else if (setupArray[0].equals("Player")) {  
+					if (setupArray[1].equals("Human")) {
+						Player humanPlayer = new HumanPlayer(setupArray[2], Integer.parseInt(setupArray[3]), Integer.parseInt(setupArray[4]), setupArray[5]);
+						players.add(humanPlayer);
+					} else {
+						Player computerPlayer = new ComputerPlayer(setupArray[2], Integer.parseInt(setupArray[3]), Integer.parseInt(setupArray[4]), setupArray[5]);
+						players.add(computerPlayer);
+					}
+					deck.add(new Card(setupArray[2], CardType.PERSON));
 				} else if (setupArray[0].equals("Weapon")) {
 					deck.add(new Card(setupArray[1], CardType.WEAPON));
 				}
@@ -249,33 +248,12 @@ public class Board {
 	}
 	
 	public void deal() {
-		Card card;
 		Random random = new Random();
 		int deckIndex;
-		do { //grab random card until it is a room
-			deckIndex = random.nextInt(deck.size());
-			card = deck.get(deckIndex);
-		} while (card.getCardType() != CardType.ROOM);
 		
-		Card roomCard = card;
-		deck.remove(deckIndex);
-		
-		do {//grab random card until it is a player
-			deckIndex = random.nextInt(deck.size());
-			card = deck.get(deckIndex);
-		} while (card.getCardType() != CardType.PERSON);
-		
-		Card playerCard = card;
-		deck.remove(deckIndex);
-		
-		do {//grab random card until it is a weapon
-			deckIndex = random.nextInt(deck.size());
-			card = deck.get(deckIndex);
-		} while (card.getCardType() != CardType.WEAPON);
-		
-		Card weaponCard = card;
-		deck.remove(deckIndex);
-		//card removed from deck so we know that it cannot be drawn by someone else
+		Card roomCard = createSolution(random, CardType.ROOM);
+		Card playerCard = createSolution(random, CardType.PERSON);
+		Card weaponCard = createSolution(random, CardType.WEAPON);
 		
 		theAnswer = new Solution(roomCard, playerCard, weaponCard);
 		
@@ -289,6 +267,19 @@ public class Board {
 				i++;
 			}
 		} while (deck.size() > 0); //want deck to be empty at the end
+	}
+
+	private Card createSolution(Random random, CardType cardType) {
+		Card card;
+		int deckIndex;
+		do { //grab random card until it is a room
+			deckIndex = random.nextInt(deck.size());
+			card = deck.get(deckIndex);
+		} while (card.getCardType() != cardType);
+		
+		deck.remove(deckIndex);
+		//card removed from deck so we know that it cannot be drawn by someone else
+		return card; 
 	}
 
 	public void setConfigFiles(String layoutConfigFile, String setupConfigFile) {
