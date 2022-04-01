@@ -17,6 +17,7 @@ class GameSetupTests {
 	
 	private static Board board;
 	
+	
 	@BeforeAll
 	public static void setUp() {
 		// Board is singleton, get the only instance
@@ -28,8 +29,8 @@ class GameSetupTests {
 	
 	@Test
 	void LoadPlayersTest() {
-		ArrayList<Player> player =  board.getPlayers();
 		
+		ArrayList<Player> player =  board.getPlayers();
 		assertEquals(player.get(0).getName(), "Aristotle");
 		assertEquals(player.get(5).getName(), "Brian Kernighan");
 		assertTrue(player.size() == 6);
@@ -56,7 +57,27 @@ class GameSetupTests {
 		assertEquals(isRoom, 9);
 		assertEquals(isPlayer, 6);
 		assertEquals(isWeapon, 6);
+	}
+	
+	@Test
+	public void testDeal() {
+		ArrayList<Player> player =  board.getPlayers();
+		ArrayList<Card> deck = board.getDeck();
 		
+		board.deal();
+		// tests if all the players get equal amount of cards.
+		for(int i = 0; i < player.size(); i++) {
+			assertEquals(player.get(i).getHand().size(), 3);
+		}
+		
+		// checks if all the cards are dealt.
+		assertEquals(deck.size(), 0);
+		
+		for(Card handCard : player.get(0).getHand()) {
+			for (int i = 1; i < player.size(); i++) {
+				assertFalse(player.get(i).getHand().contains(handCard));
+			}
+		}
 	}
 
 }

@@ -1,11 +1,13 @@
 package clueGame;
 
 import java.awt.Color;
+import java.util.*;
 
 public abstract class Player {
 	private String name;
 	private Color color;
 	private int row, col;
+	private Set<Card> hand;
 	
 	public abstract void updateHand(Card card);
 
@@ -36,6 +38,12 @@ public abstract class Player {
 		}
 	}
 	
+	
+	
+	public Set<Card> getHand() {
+		return new HashSet<Card>();
+	}
+
 	public String getName() {
 		return name;
 	}
