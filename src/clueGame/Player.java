@@ -7,7 +7,7 @@ public abstract class Player {
 	private String name;
 	private Color color;
 	private int row, col;
-	protected Set<Card> hand;
+	private Set<Card> hand;
 	
 	public abstract void updateHand(Card card);
 
@@ -40,14 +40,16 @@ public abstract class Player {
 		hand = new HashSet<Card>();
 	}
 	
-	
-	
 	public Set<Card> getHand() {
 		return hand;
 	}
 
 	public String getName() {
 		return name;
+	}
+	
+	public Card disproveSuggestion(Card playerCard, Card roomCard, Card weaponCard) {
+		return null;
 	}
 	
 }
