@@ -50,7 +50,6 @@ public class Board {
 		}
 		
 		createAdjacencyList();
-		theAnswer = new Solution();
 	}
 
 
@@ -283,6 +282,20 @@ public class Board {
 		//card removed from deck so we know that it cannot be drawn by someone else
 		return card; 
 	}
+	
+	public void setAnswer(Card playerCard, Card roomCard, Card weaponCard) {
+		theAnswer.setPerson(playerCard);
+		theAnswer.setRoom(roomCard);
+		theAnswer.setWeapon(weaponCard);
+	}
+
+	public Boolean checkAccusation(Solution accusation) {
+		if (accusation.getPerson() == theAnswer.getPerson() && accusation.getRoom() == theAnswer.getRoom() && accusation.getWeapon() == theAnswer.getWeapon()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	public void setConfigFiles(String layoutConfigFile, String setupConfigFile) {
 		this.layoutConfigFile = layoutConfigFile;
@@ -326,15 +339,5 @@ public class Board {
 		return targets;
 	}
 
-	public void setAnswer(Card playerCard, Card roomCard, Card weaponCard) {
-		theAnswer.setPerson(playerCard);
-		theAnswer.setRoom(roomCard);
-		theAnswer.setWeapon(weaponCard);
-	}
-
-	public Boolean checkAccusation(Solution accusation) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 }
