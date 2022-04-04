@@ -49,7 +49,27 @@ public abstract class Player {
 	}
 	
 	public Card disproveSuggestion(Card playerCard, Card roomCard, Card weaponCard) {
-		return null;
+		ArrayList<Card> disprovenCards = new ArrayList<Card>();
+		//check if the player has any cards that 
+		if (hand.contains(playerCard)) {
+			disprovenCards.add(playerCard);
+		}
+		if (hand.contains(roomCard)) {
+			disprovenCards.add(roomCard);
+		}
+		if (hand.contains(weaponCard)) {
+			disprovenCards.add(weaponCard);
+		}
+		
+		
+		if (disprovenCards.size() >= 1) { //one if statement for >= 1 because it helps cut down code
+			//if size is 1 then it'll just randomly select 1
+			Random rand = new Random();
+			int setIndex = rand.nextInt(disprovenCards.size());
+			return disprovenCards.get(setIndex);
+		} else {
+			return null;
+		}
 	}
 	
 }
