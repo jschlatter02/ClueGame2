@@ -3,6 +3,7 @@ package clueGame;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
+import java.util.function.BooleanSupplier;
 
 public class Board {
 	private BoardCell[][] grid;
@@ -49,6 +50,7 @@ public class Board {
 		}
 		
 		createAdjacencyList();
+		theAnswer = new Solution();
 	}
 
 
@@ -322,6 +324,17 @@ public class Board {
 
 	public Set<BoardCell> getTargets() {
 		return targets;
+	}
+
+	public void setAnswer(Card playerCard, Card roomCard, Card weaponCard) {
+		theAnswer.setPerson(playerCard);
+		theAnswer.setRoom(roomCard);
+		theAnswer.setWeapon(weaponCard);
+	}
+
+	public Boolean checkAccusation(Solution accusation) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
