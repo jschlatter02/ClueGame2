@@ -42,18 +42,6 @@ public abstract class Player {
 		seenCards = new HashSet<Card>();
 	}
 	
-	public void updateSeen(Card seenCard) {
-		seenCards.add(seenCard);
-	}
-	
-	public Set<Card> getHand() {
-		return hand;
-	}
-
-	public String getName() {
-		return name;
-	}
-	
 	public Card disproveSuggestion(Card playerCard, Card roomCard, Card weaponCard) {
 		ArrayList<Card> disprovenCards = new ArrayList<Card>();
 		//check if the player has any cards that 
@@ -77,5 +65,22 @@ public abstract class Player {
 			return null;
 		}
 	}
+	
+	public void updateSeen(Card seenCard) {
+		seenCards.add(seenCard);
+	}
+	
+	public Set<Card> getHand() {
+		return hand;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public Set<Card> getSeenCards() {
+		return seenCards;
+	}
+
 	
 }
