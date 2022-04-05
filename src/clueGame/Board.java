@@ -297,7 +297,15 @@ public class Board {
 		}
 	}
 	
-	public Card handleSuggestions(Card playerCard, Card roomCard, Card weaponCard) {
+	public Card handleSuggestions(Card playerCard, Card roomCard, Card weaponCard, int suggester) {
+		for (int i = 1; i < players.size(); i++) {
+			if (i != suggester) {
+				Card disprovenCard = players.get(i).disproveSuggestion(playerCard, roomCard, weaponCard);
+				if (disprovenCard != null) {
+					return disprovenCard;
+				}
+			}
+		}
 		return null;
 	}
 

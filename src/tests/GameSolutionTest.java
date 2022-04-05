@@ -46,11 +46,11 @@ class GameSolutionTest {
 		musketCard = new Card("Musket", CardType.WEAPON);
 		sickleCard = new Card("Sickle", CardType.WEAPON);
 		spearCard = new Card("Spear", CardType.WEAPON);
-		board.deal();
 	}
 	
 	@Test
 	public void testAccusations() {
+		board.deal(); //deals cards so that theAnswer is initialized in board
 		board.setAnswer(smithCard, bathroomCard, katanaCard);
 		assertTrue(board.checkAccusation(new Solution(bathroomCard, smithCard, katanaCard)));
 		//must be false
@@ -97,6 +97,7 @@ class GameSolutionTest {
 		humanPlayer.updateHand(wozniakCard);
 		humanPlayer.updateHand(laundryCard);
 		ComputerPlayer compPlayer1 = new ComputerPlayer("Will Smith", 0, 0, "green");
+		//using the parameters since they don't matter for this test
 		compPlayer1.updateHand(livingCard);
 		ComputerPlayer compPlayer2 = new ComputerPlayer("Will Smith", 0, 0, "green");
 		compPlayer2.updateHand(knifeCard);
@@ -108,15 +109,21 @@ class GameSolutionTest {
 		players.add(compPlayer2);
 		players.add(compPlayer3);
 		
-		board.setPlayers(players);
+		board.setPlayers(players); //make sure that our player list is used for the tests
 		
-		Card notDisproven = board.handleSuggestions(aristotleCard, bathroomCard, sickleCard);
+		Card notDisproven = board.handleSuggestions(aristotleCard, bathroomCard, sickleCard, 0);
+		//last integer is which player is making a suggestion
 		assertEquals(notDisproven, null);
 		
-		Card accuserDisproven = board.handleSuggestions(wozniakCard, laundryCard, livingCard);
+		Card accuserDisproven = board.handleSuggestions(wozniakCard, laundryCard, bowCard, 0);
 		assertEquals(accuserDisproven, null);
+		
+		//test if other players are accuser that their card is not chosen
+		Card player1Disproven = board.handleSuggestions(smithCard, livingCard, bowCard, 1);
+		assertEquals(player1Disproven, null);
 	
-		Card earliestDisproven = board.handleSuggestions(aristotleCard, livingCard, knifeCard);
+		//player 1's card must disprove the statement and not player 2's card
+		Card earliestDisproven = board.handleSuggestions(aristotleCard, livingCard, knifeCard, 0);
 		assertEquals(earliestDisproven, livingCard);
 	}
 
