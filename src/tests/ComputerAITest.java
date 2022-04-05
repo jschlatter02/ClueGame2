@@ -13,9 +13,9 @@ import clueGame.*;
 
 class ComputerAITest {
 	private static Board board;	
-	private static Card smithCard, aristotleCard, turingCard, wozniakCard, mccarthyCard, kernighanCard;
-	private static Card foyerCard, bathroomCard, laundryCard, kitchenCard, officeCard, bedroomCard, studyCard, livingCard, gameCard;
-	private static Card knifeCard, bowCard, katanaCard, musketCard, sickleCard, spearCard;
+	private static Card aristotleCard, kernighanCard;
+	private static Card kitchenCard, bedroomCard, livingCard;
+	private static Card katanaCard, sickleCard;
 	
 	@BeforeAll
 	public static void setUp() {
@@ -25,29 +25,15 @@ class ComputerAITest {
 		// Initialize will load BOTH config files
 		board.initialize();
 		//players
-		smithCard = new Card("Will Smith", CardType.PERSON);
 		aristotleCard = new Card("Aristotle", CardType.PERSON);
-		turingCard = new Card("Alan Turing", CardType.PERSON);
-		wozniakCard = new Card("Scott Wozniak", CardType.PERSON);
-		mccarthyCard = new Card("John McCarthy", CardType.PERSON);
 		kernighanCard = new Card("Brian Kernighan", CardType.PERSON);
 		//rooms
-		foyerCard = new Card("Foyer", CardType.ROOM);
-		bathroomCard = new Card("Bathroom", CardType.ROOM);
-		laundryCard = new Card("Laundry Room", CardType.ROOM);
 		kitchenCard = new Card("Kitchen", CardType.ROOM);
-		officeCard = new Card("Office", CardType.ROOM);
 		bedroomCard = new Card("Master Bedroom", CardType.ROOM);
-		studyCard = new Card("Study Room", CardType.ROOM);
 		livingCard = new Card("Living Room", CardType.ROOM);
-		gameCard = new Card("Game Room", CardType.ROOM);
 		//weapons
-		knifeCard = new Card("Knife", CardType.WEAPON);
-		bowCard = new Card("Bow and Arrow", CardType.WEAPON);
 		katanaCard = new Card("Katana", CardType.WEAPON);
-		musketCard = new Card("Musket", CardType.WEAPON);
 		sickleCard = new Card("Sickle", CardType.WEAPON);
-		spearCard = new Card("Spear", CardType.WEAPON);
 	}
 	
 	@Test
