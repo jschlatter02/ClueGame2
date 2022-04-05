@@ -47,5 +47,12 @@ public class ComputerPlayer extends Player{
 		
 		return computerSuggestion;
 	}
+	
+	public BoardCell selectTarget(Set<BoardCell> targets) {
+		Set<Card> hand = super.getHand();
+		Set<Card> seenCards = super.getSeenCards();
+		
+		return null;
+	}
 
 }
