@@ -267,14 +267,14 @@ public class Board {
 		
 		theAnswer = new Solution(roomCard, playerCard, weaponCard);
 		
-		int i = 0;
+		int currentPlayer = 0;
 		do {
 			deckIndex = random.nextInt(deck.size());
-			Player player = players.get(i);
+			Player player = players.get(currentPlayer);
 			player.updateHand(deck.get(deckIndex));
 			deck.remove(deckIndex);
 			if (player.getHand().size() == 3) { //way to iterate through every player
-				i++;
+				currentPlayer++;
 			}
 		} while (deck.size() > 0); //want deck to be empty at the end
 	}
@@ -307,9 +307,9 @@ public class Board {
 	}
 	
 	public Card handleSuggestions(Card playerCard, Card roomCard, Card weaponCard, int suggester) {
-		for (int i = 1; i < players.size(); i++) {
-			if (i != suggester) {
-				Card disprovenCard = players.get(i).disproveSuggestion(playerCard, roomCard, weaponCard);
+		for (int player = 0; player < players.size(); player++) {
+			if (player != suggester) {
+				Card disprovenCard = players.get(player).disproveSuggestion(playerCard, roomCard, weaponCard);
 				if (disprovenCard != null) {
 					return disprovenCard;
 				}

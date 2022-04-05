@@ -64,11 +64,9 @@ class ComputerAITest {
 		Set<Card> hand = compPlayer.getHand();
 		Set<Card> seenCards = compPlayer.getSeenCards();
 		//created so that the list of cards
-		ArrayList<Card> weaponsCards = board.getWeaponsCards();
-		ArrayList<Card> playerCards = board.getPlayerCards();
 		
 		BoardCell roomCell = board.getCell(14, 3);
-		Solution compSuggestion = compPlayer.createSuggestion(board.getRoom(roomCell), playerCards, weaponsCards); //want the player in the living room
+		Solution compSuggestion = compPlayer.createSuggestion(board.getRoom(roomCell)); //want the player in the living room
 		//make sure the room is the one that the player is in
 		Card roomSuggestion = compSuggestion.getRoom();
 		assertTrue(roomSuggestion.equals(livingCard)); //used .equals() because AssertEquals was not passing
@@ -90,16 +88,14 @@ class ComputerAITest {
 		ComputerPlayer compPlayer = new ComputerPlayer("Will Smith", 18, 14, "green");
 		
 		board.calcTargets(board.getCell(18, 14), 3);
-		Set<BoardCell> targets = board.getTargets();
-		Map<Character, Room> roomMap = board.getRoomMap();
 		
-		BoardCell selectedCell = compPlayer.selectTarget(targets, roomMap);
+		BoardCell selectedCell = compPlayer.selectTarget();
 		assertEquals(selectedCell, board.getCell(22, 19));
 		
 		compPlayer.updateSeen(kitchenCard);
 		int inSeenRoom = 0;
 		for (int i = 0; i < 100; i++) {
-			BoardCell chosenCell = compPlayer.selectTarget(targets, roomMap);
+			BoardCell chosenCell = compPlayer.selectTarget();
 			if (chosenCell == board.getCell(22, 19)) {
 				inSeenRoom++;
 			}
@@ -108,12 +104,11 @@ class ComputerAITest {
 		assertTrue(inSeenRoom != 100); //make sure that if the room is seen, it is not always chosen (still could be though)
 		
 		board.calcTargets(board.getCell(9, 4), 3); //next to two rooms that are unseen
-		targets = board.getTargets();
 		
 		int inLiving = 0;
 		int inGameRoom = 0;
 		for (int i = 0; i < 100; i++) {
-			BoardCell chosenCell = compPlayer.selectTarget(targets, roomMap);
+			BoardCell chosenCell = compPlayer.selectTarget();
 			if (chosenCell == board.getCell(14, 3)) {
 				inLiving++;
 			} else if (chosenCell == board.getCell(3, 3)) {

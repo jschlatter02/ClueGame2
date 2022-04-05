@@ -3,9 +3,11 @@ package clueGame;
 import java.util.*;
 
 public class ComputerPlayer extends Player{
+	private static Board board;
 
 	public ComputerPlayer(String name, int row, int col, String color) {
 		super(name, row, col, color);
+		board = board.getInstance();
 	}
 
 	@Override
@@ -13,28 +15,18 @@ public class ComputerPlayer extends Player{
 		super.getHand().add(card);
 	}
 	
-	public Solution createSuggestion(Room currentRoom, ArrayList<Card> playerCards, ArrayList<Card> weaponCards) {
+	public Solution createSuggestion(Room currentRoom) {
 		Set<Card> hand = super.getHand();
 		Set<Card> seenCards = super.getSeenCards();
-		ArrayList<Card> unseenPlayers = new ArrayList<Card>(); //want a separate arraylist to keep track of the 
-		ArrayList<Card> unseenWeapons = new ArrayList<Card>(); //cards that have not been seen
 		Random randInt = new Random();
+		ArrayList<Card> playerCards = board.getPlayerCards();
+		ArrayList<Card> weaponCards = board.getWeaponsCards();
 		
-		//System.out.println(currentRoom.getName());
+		Card roomCard = new Card(currentRoom.getName(), CardType.ROOM); //room suggestion based on the current room
 		
-		Card roomCard = new Card(currentRoom.getName(), CardType.ROOM);
-		
-		for (Card playerCard : playerCards) {
-			if(!hand.contains(playerCard) && !seenCards.contains(playerCard)) {
-				unseenPlayers.add(playerCard);
-			}
-		}
-		
-		for (Card weaponCard : weaponCards) {
-			if(!hand.contains(weaponCard) && !seenCards.contains(weaponCard)) {
-				unseenWeapons.add(weaponCard); //if not seen then add it to the list
-			}
-		}
+		ArrayList<Card> unseenPlayers = addToUnseen(playerCards, hand, seenCards); //list of players/weapons that have
+		                      													   //not been seen
+		ArrayList<Card> unseenWeapons = addToUnseen(weaponCards, hand, seenCards);
 		
 		//grab a random card from the list of unseen cards
 		int randomIdx = randInt.nextInt(unseenPlayers.size());
@@ -43,14 +35,26 @@ public class ComputerPlayer extends Player{
 		randomIdx = randInt.nextInt(unseenWeapons.size());
 		Card weaponCard = unseenWeapons.get(randomIdx);
 		
-		Solution computerSuggestion = new Solution(roomCard, playerCard, weaponCard);
+		return new Solution(roomCard, playerCard, weaponCard);
+	}
+
+	private ArrayList<Card> addToUnseen(ArrayList<Card> listOfCards, Set<Card> hand, Set<Card> seenCards) {
+		//want a separate arraylist to keep track of the unseen players/weapons to 
+		ArrayList<Card> unseenCards = new ArrayList<Card>();
+		for (Card card : listOfCards) {
+			if(!hand.contains(card) && !seenCards.contains(card)) {
+				unseenCards.add(card); //if not seen then add it to the list
+			}
+		}
 		
-		return computerSuggestion;
+		return unseenCards;
 	}
 	
-	public BoardCell selectTarget(Set<BoardCell> targets, Map<Character, Room> roomMap) {
+	public BoardCell selectTarget() {
 		Set<Card> hand = super.getHand();
 		Set<Card> seenCards = super.getSeenCards();
+		Set<BoardCell> targets = board.getTargets();
+		Map<Character, Room> roomMap = board.getRoomMap();
 		ArrayList<Card> allRooms = new ArrayList<Card>();
 		ArrayList<Card> unseenRooms = new ArrayList<Card>();
 		
@@ -63,20 +67,7 @@ public class ComputerPlayer extends Player{
 		}
 		
 		for(Card roomCard : allRooms) { //.contains() would not work for some reason so we had to implement our own algorithm
-			int handValue = 0; //we do have a .equals() for Card
-			for (Card handCard : hand) {
-				if (handCard.equals(roomCard)) {
-					handValue++;
-				}
-			}
-			int seenValue = 0;
-			for (Card seenCard : seenCards) {
-				if (seenCard.equals(roomCard)) {
-					seenValue++;
-				}
-			}
-			
-			if (seenValue + handValue == 0) { //make sure the Card is not in hand or seenCards
+			if (!hand.contains(roomCard) && !seenCards.contains(roomCard)) {
 				unseenRooms.add(roomCard);
 			}
 		}

@@ -17,8 +17,15 @@ public class Card {
 	public CardType getCardType() {
 		return cardType;
 	}
-
-	public boolean equals(Card target) {
+	
+	@Override
+	public boolean equals(Object o) {
+		Card target = (Card) o;
 		return cardName.equals(target.cardName);
+	}
+	
+	@Override
+	public int hashCode() {
+		return cardName.hashCode();
 	}
 }
