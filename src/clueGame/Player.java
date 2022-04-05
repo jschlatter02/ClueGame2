@@ -8,6 +8,7 @@ public abstract class Player {
 	private Color color;
 	private int row, col;
 	private Set<Card> hand;
+	private Set<Card> seenCards;
 	
 	public abstract void updateHand(Card card);
 
@@ -38,6 +39,11 @@ public abstract class Player {
 		}
 		
 		hand = new HashSet<Card>();
+		seenCards = new HashSet<Card>();
+	}
+	
+	public void updateSeen(Card seenCard) {
+		seenCards.add(seenCard);
 	}
 	
 	public Set<Card> getHand() {

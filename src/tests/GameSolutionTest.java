@@ -2,6 +2,8 @@ package tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -86,6 +88,36 @@ class GameSolutionTest {
 		
 		assertTrue(aristotleCardValue > 0); //aristotle was picked at least once
 		assertTrue(studyCardValue > 0); // study room was picked at least once
+	}
+	
+	@Test
+	public void testHandleSuggestion() {
+		ArrayList<Player> players = new ArrayList<Player>();
+		HumanPlayer humanPlayer = new HumanPlayer("Will Smith", 0, 0, "green");
+		humanPlayer.updateHand(wozniakCard);
+		humanPlayer.updateHand(laundryCard);
+		ComputerPlayer compPlayer1 = new ComputerPlayer("Will Smith", 0, 0, "green");
+		compPlayer1.updateHand(livingCard);
+		ComputerPlayer compPlayer2 = new ComputerPlayer("Will Smith", 0, 0, "green");
+		compPlayer2.updateHand(knifeCard);
+		ComputerPlayer compPlayer3 = new ComputerPlayer("Will Smith", 0, 0, "green");
+		compPlayer3.updateHand(kitchenCard);
+		
+		players.add(humanPlayer);
+		players.add(compPlayer1);
+		players.add(compPlayer2);
+		players.add(compPlayer3);
+		
+		board.setPlayers(players);
+		
+		Card notDisproven = board.handleSuggestions(aristotleCard, bathroomCard, sickleCard);
+		assertEquals(notDisproven, null);
+		
+		Card accuserDisproven = board.handleSuggestions(wozniakCard, laundryCard, livingCard);
+		assertEquals(accuserDisproven, null);
+	
+		Card earliestDisproven = board.handleSuggestions(aristotleCard, livingCard, knifeCard);
+		assertEquals(earliestDisproven, livingCard);
 	}
 
 }

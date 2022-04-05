@@ -16,7 +16,7 @@ public class Board {
 	private static Board theInstance = new Board();
 	private Map<Character, Room> roomMap;
 	
-	// These are not defined globally since two methods uses these instance variables.
+	// These are defined globally since two methods uses these instance variables.
 	private FileReader reader = null;
 	private Scanner scanner = null;
 	
@@ -296,6 +296,10 @@ public class Board {
 			return false;
 		}
 	}
+	
+	public Card handleSuggestions(Card playerCard, Card roomCard, Card weaponCard) {
+		return null;
+	}
 
 	public void setConfigFiles(String layoutConfigFile, String setupConfigFile) {
 		this.layoutConfigFile = layoutConfigFile;
@@ -311,9 +315,11 @@ public class Board {
 		char label = cell.getInitial();
 		return roomMap.get(label);
 	}
+	
+	public void setPlayers(ArrayList<Player> players) {
+		this.players = players;
+	}
 
-	
-	
 	public ArrayList<Player> getPlayers() {
 		return players;
 	}
@@ -338,6 +344,7 @@ public class Board {
 	public Set<BoardCell> getTargets() {
 		return targets;
 	}
+
 
 
 }
