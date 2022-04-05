@@ -23,6 +23,11 @@ public class Board {
 	//card instance variables
 	private ArrayList<Player> players;
 	private ArrayList<Card> deck;
+	//used so that when we delete from deck, we don't lose the list of cards
+	//helpful for the computer suggestions
+	private ArrayList<Card> weaponsCards;
+	private ArrayList<Card> playerCards;
+	
 	private Solution theAnswer;
 	
 
@@ -154,6 +159,8 @@ public class Board {
 		setupConfigFile = "data/" + setupConfigFile;
 		players = new ArrayList<Player>();
 		deck = new ArrayList<Card>();
+		weaponsCards = new ArrayList<Card>();
+		playerCards = new ArrayList<Card>();
 
 		try {
 			reader = new FileReader(setupConfigFile);
@@ -184,8 +191,10 @@ public class Board {
 						players.add(computerPlayer);
 					}
 					deck.add(new Card(setupArray[2], CardType.PERSON));
+					playerCards.add(new Card(setupArray[2], CardType.PERSON));
 				} else if (setupArray[0].equals("Weapon")) {
 					deck.add(new Card(setupArray[1], CardType.WEAPON));
+					weaponsCards.add(new Card(setupArray[1], CardType.PERSON));
 				}
 				else {
 					throw new BadConfigFormatException("The specified line does not have the right card format. Retry with a new file.");
@@ -290,7 +299,7 @@ public class Board {
 	}
 
 	public Boolean checkAccusation(Solution accusation) {
-		if (accusation.getPerson() == theAnswer.getPerson() && accusation.getRoom() == theAnswer.getRoom() && accusation.getWeapon() == theAnswer.getWeapon()) {
+		if (accusation.getPerson().equals(theAnswer.getPerson()) && accusation.getRoom().equals(theAnswer.getRoom()) && accusation.getWeapon().equals(theAnswer.getWeapon())) {
 			return true;
 		} else {
 			return false;
@@ -352,6 +361,16 @@ public class Board {
 	public Set<BoardCell> getTargets() {
 		return targets;
 	}
+
+	public ArrayList<Card> getWeaponsCards() {
+		return weaponsCards;
+	}
+
+	public ArrayList<Card> getPlayerCards() {
+		return playerCards;
+	}
+	
+	
 
 
 
