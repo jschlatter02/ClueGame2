@@ -369,6 +369,10 @@ public class Board {
 	public ArrayList<Card> getPlayerCards() {
 		return playerCards;
 	}
+
+	public Map<Character, Room> getRoomMap() {
+		return roomMap;
+	}
 	
 	
 

@@ -48,10 +48,53 @@ public class ComputerPlayer extends Player{
 		return computerSuggestion;
 	}
 	
-	public BoardCell selectTarget(Set<BoardCell> targets) {
+	public BoardCell selectTarget(Set<BoardCell> targets, Map<Character, Room> roomMap) {
 		Set<Card> hand = super.getHand();
 		Set<Card> seenCards = super.getSeenCards();
+		ArrayList<Card> allRooms = new ArrayList<Card>();
+		ArrayList<Card> unseenRooms = new ArrayList<Card>();
 		
+		for (BoardCell target : targets) {
+			if (target.isRoomCenter()) { //add all the rooms to a separate array
+				Room adjRoom = roomMap.get(target.getInitial());
+				Card targetCard = new Card(adjRoom.getName(), CardType.ROOM);
+				allRooms.add(targetCard);
+			}
+		}
+		
+		for(Card roomCard : allRooms) { //.contains() would not work for some reason so we had to implement our own algorithm
+			int handValue = 0; //we do have a .equals() for Card
+			for (Card handCard : hand) {
+				if (handCard.equals(roomCard)) {
+					handValue++;
+				}
+			}
+			int seenValue = 0;
+			for (Card seenCard : seenCards) {
+				if (seenCard.equals(roomCard)) {
+					seenValue++;
+				}
+			}
+			
+			if (seenValue + handValue == 0) { //make sure the Card is not in hand or seenCards
+				unseenRooms.add(roomCard);
+			}
+		}
+		
+		Random randInt = new Random();
+		if (unseenRooms.size() == 0) { //choose a random location from the targets
+			BoardCell[] targetsArray = targets.toArray(new BoardCell[targets.size()]);
+			int randIdx = randInt.nextInt(targetsArray.length);
+			return targetsArray[randIdx];
+		} else { //choose a random room from the rooms that have not been seen
+			Card randomTarget = unseenRooms.get(randInt.nextInt(unseenRooms.size()));
+			for (Room room : roomMap.values()) {
+				if (room.getName().equals(randomTarget.getCardName())) {
+					BoardCell roomCell = room.getCenterCell();
+					return roomCell;
+				}
+			}
+		}
 		return null;
 	}
 

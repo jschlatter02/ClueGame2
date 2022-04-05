@@ -3,6 +3,7 @@ package tests;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -90,14 +91,15 @@ class ComputerAITest {
 		
 		board.calcTargets(board.getCell(18, 14), 3);
 		Set<BoardCell> targets = board.getTargets();
+		Map<Character, Room> roomMap = board.getRoomMap();
 		
-		BoardCell selectedCell = compPlayer.selectTarget(targets);
+		BoardCell selectedCell = compPlayer.selectTarget(targets, roomMap);
 		assertEquals(selectedCell, board.getCell(22, 19));
 		
 		compPlayer.updateSeen(kitchenCard);
 		int inSeenRoom = 0;
 		for (int i = 0; i < 100; i++) {
-			BoardCell chosenCell = compPlayer.selectTarget(targets);
+			BoardCell chosenCell = compPlayer.selectTarget(targets, roomMap);
 			if (chosenCell == board.getCell(22, 19)) {
 				inSeenRoom++;
 			}
@@ -111,7 +113,7 @@ class ComputerAITest {
 		int inLiving = 0;
 		int inGameRoom = 0;
 		for (int i = 0; i < 100; i++) {
-			BoardCell chosenCell = compPlayer.selectTarget(targets);
+			BoardCell chosenCell = compPlayer.selectTarget(targets, roomMap);
 			if (chosenCell == board.getCell(14, 3)) {
 				inLiving++;
 			} else if (chosenCell == board.getCell(3, 3)) {
