@@ -299,11 +299,7 @@ public class Board {
 	}
 
 	public Boolean checkAccusation(Solution accusation) {
-		if (accusation.getPerson().equals(theAnswer.getPerson()) && accusation.getRoom().equals(theAnswer.getRoom()) && accusation.getWeapon().equals(theAnswer.getWeapon())) {
-			return true;
-		} else {
-			return false;
-		}
+		return (accusation.getPerson().equals(theAnswer.getPerson()) && accusation.getRoom().equals(theAnswer.getRoom()) && accusation.getWeapon().equals(theAnswer.getWeapon()));
 	}
 	
 	public Card handleSuggestions(Card playerCard, Card roomCard, Card weaponCard, int suggester) {
