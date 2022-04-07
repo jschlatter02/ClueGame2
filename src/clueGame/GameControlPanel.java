@@ -6,11 +6,11 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-public class GameControlPanel extends JPanel{
+public class GameControlPanel extends JPanel {
 	// Created instance variables so that we can update the text fields later on.
 	private JTextField turnTextField;
 	private JTextField rollTextField;
-	private JTextField guessTextField = new JTextField(30);				// initialized it so that it does not throw a null pointer exception.
+	private JTextField guessTextField = new JTextField(30);	// initialized it so that it does not throw a null pointer exception.
 	private JTextField guessResultTextField = new JTextField(30);
 
 	public GameControlPanel() {

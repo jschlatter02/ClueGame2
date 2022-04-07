@@ -21,6 +21,7 @@ public class Board {
 	private Scanner scanner = null;
 	
 	//card instance variables
+	private HumanPlayer humanPlayer;
 	private ArrayList<Player> players;
 	private ArrayList<Card> deck;
 	//used so that when we delete from deck, we don't lose the list of cards
@@ -184,7 +185,7 @@ public class Board {
 
 				} else if (setupArray[0].equals("Player")) {  
 					if (setupArray[1].equals("Human")) {
-						Player humanPlayer = new HumanPlayer(setupArray[2], Integer.parseInt(setupArray[3]), Integer.parseInt(setupArray[4]), setupArray[5]);
+						humanPlayer = new HumanPlayer(setupArray[2], Integer.parseInt(setupArray[3]), Integer.parseInt(setupArray[4]), setupArray[5]);
 						players.add(humanPlayer);
 					} else {
 						Player computerPlayer = new ComputerPlayer(setupArray[2], Integer.parseInt(setupArray[3]), Integer.parseInt(setupArray[4]), setupArray[5]);
@@ -368,6 +369,10 @@ public class Board {
 
 	public Map<Character, Room> getRoomMap() {
 		return roomMap;
+	}
+
+	public HumanPlayer getHumanPlayer() {
+		return humanPlayer;
 	}
 	
 	
