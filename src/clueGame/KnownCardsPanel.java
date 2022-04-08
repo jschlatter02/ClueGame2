@@ -12,14 +12,13 @@ import javax.swing.border.TitledBorder;
 public class KnownCardsPanel extends JPanel {
 	//instance variables so that we can update the panels when we add cards to the seen
 	private JPanel playerPanel, roomPanel, weaponPanel;
-	private HumanPlayer humanPlayer;
+	private static HumanPlayer humanPlayer;
 	private static Board board;
 	
 	public KnownCardsPanel() {
 		setLayout(new GridLayout(3,0));
 		setBorder(new TitledBorder(new EtchedBorder(), "Known Cards"));
-		
-		
+			
 		playerPanel = new JPanel();
 		playerPanel.setBorder(new TitledBorder(new EtchedBorder(), "People"));
 		updatePanel(playerPanel, CardType.PERSON);
@@ -65,8 +64,6 @@ public class KnownCardsPanel extends JPanel {
 		panel.add(seenLabel, BorderLayout.SOUTH);
 		
 		addTextFields(panel, correctSeenCards);
-
-		
 	}
 
 	private void addTextFields(JPanel panel, ArrayList<Card> playerCards) {
@@ -92,6 +89,16 @@ public class KnownCardsPanel extends JPanel {
 		}
 		return correctCardType; //holds only the player, room, or weapon cards
 	}
+	
+	public void updatePanels() {
+		playerPanel.removeAll();
+		roomPanel.removeAll();
+		weaponPanel.removeAll();
+		
+		updatePanel(playerPanel, CardType.PERSON);
+		updatePanel(roomPanel, CardType.ROOM);
+		updatePanel(weaponPanel, CardType.WEAPON);	
+	}
 
 	public static void main(String[] args) {
 		board = board.getInstance();
@@ -101,10 +108,25 @@ public class KnownCardsPanel extends JPanel {
 		
 		KnownCardsPanel panel = new KnownCardsPanel();  
 		JFrame frame = new JFrame();  
+		
+		humanPlayer.updateSeen(new Card("Will Smith", CardType.PERSON));
+		humanPlayer.updateSeen(new Card("Aristotle", CardType.PERSON));
+		humanPlayer.updateSeen(new Card("Alan Turing", CardType.PERSON));
+		humanPlayer.updateSeen(new Card("Foyer", CardType.ROOM));
+		humanPlayer.updateSeen(new Card("Bathroom", CardType.ROOM));
+		humanPlayer.updateSeen(new Card("Laundry Room", CardType.ROOM));
+		humanPlayer.updateSeen(new Card("Kitchen", CardType.ROOM));
+		humanPlayer.updateSeen(new Card("Office", CardType.ROOM));
+		humanPlayer.updateSeen(new Card("Knife", CardType.WEAPON));
+		humanPlayer.updateSeen(new Card("Sickel", CardType.WEAPON));
+		humanPlayer.updateSeen(new Card("Spear", CardType.WEAPON));
+		
+		board.setHumanPlayer(humanPlayer);
+		panel.updatePanels();
+
 		frame.setContentPane(panel); 
 		frame.setSize(180, 700);  
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
-
 }

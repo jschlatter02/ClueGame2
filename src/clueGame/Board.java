@@ -374,6 +374,10 @@ public class Board {
 	public HumanPlayer getHumanPlayer() {
 		return humanPlayer;
 	}
+
+	public void setHumanPlayer(HumanPlayer humanPlayer) {
+		this.humanPlayer = humanPlayer;
+	}
 	
 	
 
