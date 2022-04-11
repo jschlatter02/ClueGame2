@@ -1,7 +1,9 @@
 package clueGame;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.*;
 
 
@@ -69,44 +71,62 @@ public class BoardCell {
 		}
 	}
 
-	public void drawCell(Graphics graphics, int width, int height, int horizontalOffset, int topOffset, Map<Character, Room> roomMap) {
+	public String[] drawCell(Graphics graphics, int width, int height, int horizontalOffset, int topOffset, Map<Character, Room> roomMap) {
 		if (initial == 'W') {
 			graphics.setColor(Color.YELLOW);
 			graphics.fillRect(horizontalOffset, topOffset, width, height);
 			graphics.setColor(Color.BLACK);
 			graphics.drawRect(horizontalOffset, topOffset, width, height);
+			
+			Graphics2D graphics2D = (Graphics2D) graphics;
+			
 			switch(doorDirection) { //draw the blue door line in the cell that has the doorway
 			case UP:
-				graphics.setColor(Color.WHITE);
-				graphics.drawLine(0, 0, width, 0);
+				graphics2D.setColor(Color.BLUE);
+				graphics2D.setStroke(new BasicStroke(height / 8));
+				graphics2D.drawLine(horizontalOffset, topOffset  ,horizontalOffset + width , topOffset );
+				graphics2D.setStroke(new BasicStroke(1));
+
 				break;
 			case LEFT:
-				graphics.setColor(Color.WHITE);
-				graphics.drawLine(0, 0, 0, height);
+				graphics2D.setColor(Color.BLUE);
+				graphics2D.setStroke(new BasicStroke(width / 5));
+				graphics2D.drawLine(horizontalOffset, topOffset ,horizontalOffset, topOffset + height);
+				graphics2D.setStroke(new BasicStroke(1));
 				break;
 			case RIGHT:
-				graphics.setColor(Color.WHITE);
-				graphics.drawLine(width, 0, width, height);
+				graphics2D.setColor(Color.BLUE);
+				graphics2D.setStroke(new BasicStroke(width / 5));
+				graphics2D.drawLine(horizontalOffset + width, topOffset, horizontalOffset + width , topOffset + height);
+				graphics2D.setStroke(new BasicStroke(1));
 				break;
 			case DOWN:
-				graphics.setColor(Color.WHITE);
-				graphics.drawLine(0, height, width, height);
+				graphics2D.setColor(Color.BLUE);
+				graphics2D.setStroke(new BasicStroke(height / 8));
+				graphics2D.drawLine(horizontalOffset, topOffset + height ,horizontalOffset + width , topOffset + height);
+				graphics2D.setStroke(new BasicStroke(1));
 				break;
 			case NONE:
 				break;
 			}
+			return null;
 		} else if (initial == 'X') {
 			graphics.setColor(Color.BLACK);
 			graphics.fillRect(horizontalOffset, topOffset, width, height);
+			return null;
 		} else {
 			graphics.setColor(Color.GRAY);
 			graphics.fillRect(horizontalOffset, topOffset, width, height);
 			if (roomLabel) { 
+				String[] roomLabels = new String[3];
 				//pass in the roomMap map so that we can easily get the room name
 				String name = roomMap.get(initial).getName();
-				graphics.setColor(Color.BLUE);
 				topOffset += height;
-				graphics.drawString(name, horizontalOffset, topOffset);
+				roomLabels[0] = name;
+				roomLabels[1] = String.valueOf(horizontalOffset);
+				roomLabels[2] = String.valueOf(topOffset);
+				return roomLabels;
+				
 			} else if (hasSecretPassage) {
 				graphics.setColor(Color.YELLOW);
 				graphics.fillRect(horizontalOffset, topOffset, width, height);
@@ -115,8 +135,10 @@ public class BoardCell {
 				topOffset += (height / 1.5);
 				graphics.setColor(Color.BLUE);
 				graphics.drawString("S", horizontalOffset, topOffset);
+				return null;
 			}
 		}
+		return null;
 	}
 	
 	public DoorDirection getDoorDirection() {

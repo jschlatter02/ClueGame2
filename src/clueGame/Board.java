@@ -1,5 +1,6 @@
 package clueGame;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -321,6 +322,7 @@ public class Board extends JPanel {
 	@Override
 	public void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);
+		ArrayList<String []> nameLocations = new ArrayList<String []>();
 		int horizontalOffset = 0;
 		int topOffset = 0;
 		int initialHorizontalOffset = horizontalOffset;
@@ -328,7 +330,11 @@ public class Board extends JPanel {
 		int height = (getHeight() - (2*topOffset)) / numRows;  //height of an individual board cell
 		for (int row = 0; row < numRows; row++) {
 			for (int col = 0; col < numColumns; col++) {
-				grid[row][col].drawCell(graphics, width, height, horizontalOffset, topOffset, roomMap);
+				String[] locations = grid[row][col].drawCell(graphics, width, height, horizontalOffset, topOffset, roomMap);
+				
+				if (locations != null) {
+					nameLocations.add(locations);
+				}
 				horizontalOffset += width;
 				if(col == numColumns - 1) {
 					horizontalOffset = initialHorizontalOffset;
@@ -343,6 +349,16 @@ public class Board extends JPanel {
 		for (Player player : players) {
 			player.drawPlayer(graphics, width, height, horizontalOffset, topOffset);
 		}
+		
+		for (String[] locations : nameLocations) {
+			String name = locations[0];
+			horizontalOffset = Integer.parseInt(locations[1]);
+			topOffset = Integer.parseInt(locations[2]);
+			
+			graphics.setColor(Color.BLUE);
+			graphics.drawString(name, horizontalOffset, topOffset);
+		}
+		
 	}
 
 	public void setConfigFiles(String layoutConfigFile, String setupConfigFile) {
