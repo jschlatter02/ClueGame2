@@ -74,12 +74,16 @@ public class BoardCell {
 			graphics.drawRect(horizontalOffset, topOffset, width, height);
 			switch(doorDirection) { //draw the blue door line in the cell that has the doorway
 			case UP:
+				graphics.drawLine(0, 0, width, 0);
 				break;
 			case LEFT:
+				graphics.drawLine(0, 0, 0, height);
 				break;
 			case RIGHT:
+				graphics.drawLine(width, 0, width, height);
 				break;
 			case DOWN:
+				graphics.drawLine(0, height, width, height);
 				break;
 			}
 		} else if (initial == 'X') {

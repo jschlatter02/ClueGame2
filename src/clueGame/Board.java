@@ -321,13 +321,22 @@ public class Board extends JPanel {
 	@Override
 	public void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);
-		int width = getWidth() / numColumns; //width of an individual board cell
-		int height = getHeight() / numRows;  //height of an individual board cell
+		int horizontalOffset = getWidth() / 30;
+		int topOffset = getHeight() / 30;
+		int initialHorizontalOffset = horizontalOffset;
+		int initialTopOffset = topOffset;
+		int width = (getWidth() - (2*horizontalOffset)) / numColumns; //width of an individual board cell
+		int height = (getHeight() - (2*topOffset)) / numRows;  //height of an individual board cell
 		for (int row = 0; row < numRows; row++) {
-			int horizontalOffset = getWidth() / 10;
+			topOffset += height;
 			for (int col = 0; col < numColumns; col++) {
-				int topOffset = getHeight() / 10;
+				horizontalOffset += width;
 				grid[row][col].drawCell(graphics, width, height, horizontalOffset, topOffset, roomMap);
+				
+				if(col == numColumns - 1) {
+					horizontalOffset = initialHorizontalOffset;
+				}
+				
 			}
 		}
 	}
