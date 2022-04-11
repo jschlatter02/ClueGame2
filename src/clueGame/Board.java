@@ -321,23 +321,27 @@ public class Board extends JPanel {
 	@Override
 	public void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);
-		int horizontalOffset = getWidth() / 30;
-		int topOffset = getHeight() / 30;
+		int horizontalOffset = 0;
+		int topOffset = 0;
 		int initialHorizontalOffset = horizontalOffset;
-		int initialTopOffset = topOffset;
 		int width = (getWidth() - (2*horizontalOffset)) / numColumns; //width of an individual board cell
 		int height = (getHeight() - (2*topOffset)) / numRows;  //height of an individual board cell
 		for (int row = 0; row < numRows; row++) {
-			topOffset += height;
 			for (int col = 0; col < numColumns; col++) {
-				horizontalOffset += width;
 				grid[row][col].drawCell(graphics, width, height, horizontalOffset, topOffset, roomMap);
-				
+				horizontalOffset += width;
 				if(col == numColumns - 1) {
 					horizontalOffset = initialHorizontalOffset;
 				}
 				
 			}
+			topOffset += height;
+		}
+		//reset these values so that we can calculate the position in the player method
+		horizontalOffset = 0;
+		topOffset = 0;
+		for (Player player : players) {
+			player.drawPlayer(graphics, width, height, horizontalOffset, topOffset);
 		}
 	}
 

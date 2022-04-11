@@ -19,6 +19,8 @@ public class ClueGame extends JFrame{
 		KnownCardsPanel knownCards = new KnownCardsPanel(board);
 		add(knownCards, BorderLayout.EAST);
 		
+		add(board, BorderLayout.CENTER);
+		
 		setSize(780, 780);
 		setTitle("Clue Game - CSCI 306");
 		setVisible(true);

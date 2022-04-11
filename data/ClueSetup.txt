@@ -19,7 +19,7 @@ Player, Computer, Will Smith, 0, 16, red
 Player, Computer, Alan Turing, 8, 23, black
 Player, Computer, Steve Wozniak, 16, 24, magenta
 Player, Computer, John McCarthy, 24, 7, orange
-Player, Computer, Brian Kernighan, 24, 11, yellow
+Player, Computer, Brian Kernighan, 24, 11, white
 
 Weapon, Knife
 Weapon, Bow and Arrow

@@ -1,6 +1,7 @@
 package clueGame;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.util.*;
 
 public abstract class Player {
@@ -27,14 +28,14 @@ public abstract class Player {
 			case "black":
 				this.color = Color.BLACK;
 				break;
-			case "Magenta":
+			case "magenta":
 				this.color = Color.MAGENTA;
 				break;
 			case "orange":
 				this.color = Color.ORANGE;
 				break;
-			case "yellow":
-				this.color = Color.YELLOW;
+			case "white":
+				this.color = Color.WHITE;
 				break;
 		}
 		
@@ -63,6 +64,16 @@ public abstract class Player {
 		if (hand.contains(card)) {
 			disprovenCards.add(card);
 		}
+	}
+	
+	public void drawPlayer(Graphics graphics, int width, int height, int horizontalOffset, int topOffset) {
+		//find position here
+		horizontalOffset += width * col;
+		topOffset += height * row;
+		graphics.setColor(color);
+		graphics.fillOval(horizontalOffset, topOffset, width, height);
+		graphics.setColor(Color.BLACK); //have black outline so the player is easier to see
+		graphics.drawOval(horizontalOffset, topOffset, width, height);
 	}
 	
 	public void updateSeen(Card seenCard) {
