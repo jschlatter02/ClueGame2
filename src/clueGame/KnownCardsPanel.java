@@ -15,7 +15,8 @@ public class KnownCardsPanel extends JPanel {
 	private static HumanPlayer humanPlayer;
 	private static Board board;
 	
-	public KnownCardsPanel() {
+	public KnownCardsPanel(Board board) {
+		this.board = board;
 		setLayout(new GridLayout(3,0));
 		setBorder(new TitledBorder(new EtchedBorder(), "Known Cards"));
 			
@@ -46,14 +47,14 @@ public class KnownCardsPanel extends JPanel {
 		//2 here so that we can account for the two labels
 		int gridSize = correctHandCards.size() + correctSeenCards.size() + 2;
 		if (correctHandCards.size() == 0) { //so we can add "None" as a Text Field
-			gridSize++;
+			gridSize++; //None + 2 labels + seenCards
 		}
 		
 		if (correctSeenCards.size() == 0) {
 			gridSize++;
 		}
 		
-		panel.setLayout(new GridLayout(gridSize,0));
+		panel.setLayout(new GridLayout(gridSize,0)); //gives us a good outline in each panel
 		
 		JLabel handLabel = new JLabel("In Hand:");
 		panel.add(handLabel, BorderLayout.SOUTH);
@@ -67,6 +68,7 @@ public class KnownCardsPanel extends JPanel {
 	}
 
 	private void addTextFields(JPanel panel, ArrayList<Card> playerCards) {
+		//add the correct amount of text fields to each panel
 		if (playerCards.size() == 0) { //add only none
 			JTextField textField = new JTextField(15);
 			textField.setText("None");
@@ -81,6 +83,7 @@ public class KnownCardsPanel extends JPanel {
 	}
 
 	private ArrayList<Card> addToCardList(JPanel panel, CardType cardType, Set<Card> playerCards) {
+		//check if the card is the correct type and then add it to a separate array list
 		ArrayList<Card> correctCardType = new ArrayList<Card>();
 		for(Card card : playerCards) {
 			if(card.getCardType() == cardType) {
@@ -91,6 +94,7 @@ public class KnownCardsPanel extends JPanel {
 	}
 	
 	public void updatePanels() {
+		//remove all to reset the panels and start again
 		playerPanel.removeAll();
 		roomPanel.removeAll();
 		weaponPanel.removeAll();
@@ -106,9 +110,9 @@ public class KnownCardsPanel extends JPanel {
 		board.initialize();
 		board.deal();
 		
-		KnownCardsPanel panel = new KnownCardsPanel();  
+		KnownCardsPanel panel = new KnownCardsPanel(board);  
 		JFrame frame = new JFrame();  
-		
+		//adding many seen cards to each type so that we can test our outline
 		humanPlayer.updateSeen(new Card("Will Smith", CardType.PERSON));
 		humanPlayer.updateSeen(new Card("Aristotle", CardType.PERSON));
 		humanPlayer.updateSeen(new Card("Alan Turing", CardType.PERSON));
@@ -121,7 +125,7 @@ public class KnownCardsPanel extends JPanel {
 		humanPlayer.updateSeen(new Card("Sickel", CardType.WEAPON));
 		humanPlayer.updateSeen(new Card("Spear", CardType.WEAPON));
 		
-		board.setHumanPlayer(humanPlayer);
+		board.setHumanPlayer(humanPlayer); //need setter so that we can have the correct humanPlayer data in updatePanel
 		panel.updatePanels();
 
 		frame.setContentPane(panel); 

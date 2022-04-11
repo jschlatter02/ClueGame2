@@ -1,11 +1,14 @@
 package clueGame;
 
+import java.awt.Graphics;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 import java.util.function.BooleanSupplier;
 
-public class Board {
+import javax.swing.JPanel;
+
+public class Board extends JPanel {
 	private BoardCell[][] grid;
 	private Set<BoardCell> targets;
 	private Set<BoardCell> visited;
@@ -313,6 +316,20 @@ public class Board {
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	public void paintComponent(Graphics graphics) {
+		super.paintComponent(graphics);
+		int width = getWidth() / numColumns; //width of an individual board cell
+		int height = getHeight() / numRows;  //height of an individual board cell
+		for (int row = 0; row < numRows; row++) {
+			int horizontalOffset = getWidth() / 10;
+			for (int col = 0; col < numColumns; col++) {
+				int topOffset = getHeight() / 10;
+				grid[row][col].drawCell(graphics, width, height, horizontalOffset, topOffset, roomMap);
+			}
+		}
 	}
 
 	public void setConfigFiles(String layoutConfigFile, String setupConfigFile) {

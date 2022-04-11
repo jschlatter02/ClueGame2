@@ -1,5 +1,7 @@
 package clueGame;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.*;
 
 
@@ -66,6 +68,40 @@ public class BoardCell {
 		}
 	}
 
+	public void drawCell(Graphics graphics, int width, int height, int horizontalOffset, int topOffset, Map<Character, Room> roomMap) {
+		if (initial == 'W') {
+			graphics.setColor(Color.YELLOW);
+			graphics.drawRect(horizontalOffset, topOffset, width, height);
+			switch(doorDirection) { //draw the blue door line in the cell that has the doorway
+			case UP:
+				break;
+			case LEFT:
+				break;
+			case RIGHT:
+				break;
+			case DOWN:
+				break;
+			}
+		} else if (initial == 'X') {
+			graphics.setColor(Color.BLACK);
+			graphics.drawRect(horizontalOffset, topOffset, width, height);
+		} else {
+			graphics.setColor(Color.GRAY);
+			graphics.fillRect(horizontalOffset, topOffset, width, height);
+			if (roomLabel) { 
+				//pass in the roomMap map so that we can easily get the room name
+				String name = roomMap.get(initial).getName();
+				graphics.setColor(Color.BLUE);
+				graphics.drawString(name, horizontalOffset, topOffset);
+			} else if (hasSecretPassage) {
+				graphics.setColor(Color.YELLOW);
+				graphics.drawRect(horizontalOffset, topOffset, width, height);
+				graphics.setColor(Color.BLUE);
+				graphics.drawString("S", horizontalOffset, topOffset);
+			}
+		}
+	}
+	
 	public DoorDirection getDoorDirection() {
 		return doorDirection;
 	}
@@ -111,6 +147,7 @@ public class BoardCell {
 	public boolean isSecretPassage() {
 		return hasSecretPassage;
 	}
+
 	
 	
 
