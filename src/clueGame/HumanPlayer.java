@@ -11,4 +11,9 @@ public class HumanPlayer extends Player{
 	public void updateHand(Card card) {
 		super.getHand().add(card);
 	}
+
+	@Override
+	public BoardCell selectTarget() {
+		return null;
+	}
 }

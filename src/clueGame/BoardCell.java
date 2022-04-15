@@ -2,6 +2,7 @@ package clueGame;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.*;
@@ -18,8 +19,12 @@ public class BoardCell {
 	private boolean roomCenter;
 	private char secretPassage;
 	private Set<BoardCell> adjList;
+	private boolean inTarget;
+	
+	final static int ROOM_LOCATION_SIZE = 3;
 	
 	public BoardCell(int row, int column) {
+		setInTarget(false);
 		this.row = row;
 		col = column;
 		doorDirection = DoorDirection.NONE;
@@ -82,28 +87,31 @@ public class BoardCell {
 			
 			switch(doorDirection) { //draw the blue door line in the cell that has the doorway
 			case UP:
+				//use graphics2d to make the stroke bigger above the cell
 				graphics2D.setColor(Color.BLUE);
 				graphics2D.setStroke(new BasicStroke(height / 8));
-				graphics2D.drawLine(horizontalOffset, topOffset  ,horizontalOffset + width , topOffset );
+				graphics2D.drawLine(horizontalOffset, topOffset, horizontalOffset + width, topOffset);
+				//need to reset the stroke size so that all the other lines aren't bold as well
 				graphics2D.setStroke(new BasicStroke(1));
-
 				break;
 			case LEFT:
 				graphics2D.setColor(Color.BLUE);
-				graphics2D.setStroke(new BasicStroke(width / 5));
-				graphics2D.drawLine(horizontalOffset, topOffset ,horizontalOffset, topOffset + height);
+				//stroke size based on width or height to make sure it doesn't take up the whole cell
+				//also makes sure that it scales well with the player moving the window
+				graphics2D.setStroke(new BasicStroke(width / 7));
+				graphics2D.drawLine(horizontalOffset, topOffset, horizontalOffset, topOffset + height);
 				graphics2D.setStroke(new BasicStroke(1));
 				break;
 			case RIGHT:
 				graphics2D.setColor(Color.BLUE);
 				graphics2D.setStroke(new BasicStroke(width / 5));
-				graphics2D.drawLine(horizontalOffset + width, topOffset, horizontalOffset + width , topOffset + height);
+				graphics2D.drawLine(horizontalOffset + width, topOffset, horizontalOffset + width, topOffset + height);
 				graphics2D.setStroke(new BasicStroke(1));
 				break;
 			case DOWN:
 				graphics2D.setColor(Color.BLUE);
-				graphics2D.setStroke(new BasicStroke(height / 8));
-				graphics2D.drawLine(horizontalOffset, topOffset + height ,horizontalOffset + width , topOffset + height);
+				graphics2D.setStroke(new BasicStroke(height / 5));
+				graphics2D.drawLine(horizontalOffset, topOffset + height, horizontalOffset + width, topOffset + height);
 				graphics2D.setStroke(new BasicStroke(1));
 				break;
 			case NONE:
@@ -111,17 +119,20 @@ public class BoardCell {
 			}
 			return null;
 		} else if (initial == 'X') {
+			//need a black place to tell players to not go there
 			graphics.setColor(Color.BLACK);
 			graphics.fillRect(horizontalOffset, topOffset, width, height);
 			return null;
 		} else {
 			graphics.setColor(Color.GRAY);
 			graphics.fillRect(horizontalOffset, topOffset, width, height);
+			
 			if (roomLabel) { 
-				String[] roomLabels = new String[3];
+				String[] roomLabels = new String[ROOM_LOCATION_SIZE];
 				//pass in the roomMap map so that we can easily get the room name
 				String name = roomMap.get(initial).getName();
 				topOffset += height;
+				//have an array because otherwise the room name gets written over when drawing the next cell
 				roomLabels[0] = name;
 				roomLabels[1] = String.valueOf(horizontalOffset);
 				roomLabels[2] = String.valueOf(topOffset);
@@ -133,12 +144,29 @@ public class BoardCell {
 				//these adjustments put the "S" in the correct spot inside the square
 				horizontalOffset += (width / 3);
 				topOffset += (height / 1.5);
+				graphics.setFont(new Font("Cambria", Font.BOLD, width/2));
 				graphics.setColor(Color.BLUE);
 				graphics.drawString("S", horizontalOffset, topOffset);
 				return null;
 			}
 		}
 		return null;
+	}
+	
+	public void drawTargets(Graphics graphics, int width, int height) {
+		Color cellColor = new Color(51, 153, 255);
+		int horizontalOffset = width * col;
+		int topOffset = height * row;
+		if (initial == 'W') {
+			graphics.setColor(cellColor);
+			graphics.fillRect(horizontalOffset, topOffset, width, height);
+			graphics.setColor(Color.black);
+			graphics.drawRect(horizontalOffset, topOffset, width, height);
+		} else if (roomCenter) {
+			graphics.setColor(cellColor);
+			graphics.fillRect(horizontalOffset, topOffset, width, height);
+		}
+		
 	}
 	
 	public DoorDirection getDoorDirection() {
@@ -186,6 +214,19 @@ public class BoardCell {
 	public boolean isSecretPassage() {
 		return hasSecretPassage;
 	}
+
+	public int getRow() {
+		return row;
+	}
+
+	public int getCol() {
+		return col;
+	}
+
+	public void setInTarget(boolean inTarget) {
+		this.inTarget = inTarget;
+	}
+
 
 	
 	

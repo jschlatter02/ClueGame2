@@ -12,6 +12,7 @@ public abstract class Player {
 	private Set<Card> seenCards;
 	
 	public abstract void updateHand(Card card);
+	public abstract BoardCell selectTarget();
 
 	public Player(String name, int row, int col, String color) {
 		this.name = name;

@@ -1,12 +1,14 @@
 package clueGame;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 import java.util.function.BooleanSupplier;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Board extends JPanel {
@@ -26,14 +28,18 @@ public class Board extends JPanel {
 	
 	//card instance variables
 	private HumanPlayer humanPlayer;
+	private Player currentPlayer; //keeps track of who's currently moving on the board
+	private int playerValue; //keeps track of the player arraylist value
 	private ArrayList<Player> players;
 	private ArrayList<Card> deck;
+	private boolean finished = true; //check if the human player is done yet
 	//used so that when we delete from deck, we don't lose the list of cards
 	//helpful for the computer suggestions
 	private ArrayList<Card> weaponsCards;
 	private ArrayList<Card> playerCards;
 	
 	private Solution theAnswer;
+	private static final int ROLL_SIZE = 6;
 	
 
 	// constructor is private to ensure only one can be created
@@ -145,6 +151,7 @@ public class Board extends JPanel {
 				else  if (!adjCell.getOccupied()){  //don't want lower part of code to run if the adjCell is a room
 					if(pathLength == 1) {   	
 						targets.add(adjCell);
+						adjCell.setInTarget(true);
 					} 
 					else {
 						findAllTargets(adjCell, pathLength - 1);
@@ -191,6 +198,9 @@ public class Board extends JPanel {
 					if (setupArray[1].equals("Human")) {
 						humanPlayer = new HumanPlayer(setupArray[2], Integer.parseInt(setupArray[3]), Integer.parseInt(setupArray[4]), setupArray[5]);
 						players.add(humanPlayer);
+						currentPlayer = humanPlayer; //first player will always be the human player
+						playerValue = -1; //when added in nextButton, it will cause it to be increased to 0
+						//this starts the turn with the human player first
 					} else {
 						Player computerPlayer = new ComputerPlayer(setupArray[2], Integer.parseInt(setupArray[3]), Integer.parseInt(setupArray[4]), setupArray[5]);
 						players.add(computerPlayer);
@@ -287,7 +297,7 @@ public class Board extends JPanel {
 	private Card createSolution(Random random, CardType cardType) {
 		Card card;
 		int deckIndex;
-		do { //grab random card until it is a room
+		do { //grab random card until it is the correct card type
 			deckIndex = random.nextInt(deck.size());
 			card = deck.get(deckIndex);
 		} while (card.getCardType() != cardType);
@@ -323,6 +333,7 @@ public class Board extends JPanel {
 	public void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);
 		ArrayList<String []> nameLocations = new ArrayList<String []>();
+		//start at 0 to get the top left corner
 		int horizontalOffset = 0;
 		int topOffset = 0;
 		int initialHorizontalOffset = horizontalOffset;
@@ -331,12 +342,13 @@ public class Board extends JPanel {
 		for (int row = 0; row < numRows; row++) {
 			for (int col = 0; col < numColumns; col++) {
 				String[] locations = grid[row][col].drawCell(graphics, width, height, horizontalOffset, topOffset, roomMap);
-				
-				if (locations != null) {
+				if (locations != null) { //means there is a room name at this location
 					nameLocations.add(locations);
 				}
 				horizontalOffset += width;
 				if(col == numColumns - 1) {
+					//reset so that the cells don't keep going past the window
+					//if there is no reset, then you would only be able to see the first row
 					horizontalOffset = initialHorizontalOffset;
 				}
 				
@@ -350,13 +362,45 @@ public class Board extends JPanel {
 			player.drawPlayer(graphics, width, height, horizontalOffset, topOffset);
 		}
 		
+		if (!finished) {
+			for (BoardCell target : targets) {
+				target.drawTargets(graphics, width, height);
+			}
+		}
+		
+		//write the room names so they don't get written over
 		for (String[] locations : nameLocations) {
 			String name = locations[0];
 			horizontalOffset = Integer.parseInt(locations[1]);
 			topOffset = Integer.parseInt(locations[2]);
 			
+			//font size is determined by width so that it scales with the player stretching
+			graphics.setFont(new Font("Cambria", Font.BOLD, width/2));
 			graphics.setColor(Color.BLUE);
 			graphics.drawString(name, horizontalOffset, topOffset);
+		}
+		
+	}
+	
+	public void nextButton(GameControlPanel gameControl) {
+		if(finished) {
+			playerValue = (playerValue + 1) % players.size(); //better way of getting the iterator back to 0
+			currentPlayer = players.get(playerValue);
+			Random random = new Random();
+			int roll = random.nextInt(ROLL_SIZE);
+			calcTargets(getCell(currentPlayer.getRow(), currentPlayer.getCol()), 7);
+			gameControl.setTurn(currentPlayer, 7);
+			if(currentPlayer.equals(humanPlayer)) {
+				finished = false;
+				repaint();
+			} else {
+				BoardCell chosenTarget = currentPlayer.selectTarget();
+				currentPlayer.setRow(chosenTarget.getRow());
+				currentPlayer.setCol(chosenTarget.getCol());
+				repaint();
+			}
+		} else { //player has not done their move
+			JOptionPane.showMessageDialog(null, "Please finish your turn!");
 		}
 		
 	}
@@ -424,6 +468,7 @@ public class Board extends JPanel {
 	public void setHumanPlayer(HumanPlayer humanPlayer) {
 		this.humanPlayer = humanPlayer;
 	}
+
 	
 	
 

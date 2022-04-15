@@ -1,6 +1,8 @@
 package clueGame;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -12,8 +14,11 @@ public class GameControlPanel extends JPanel {
 	private JTextField rollTextField;
 	private JTextField guessTextField = new JTextField(30);	// initialized it so that it does not throw a null pointer exception.
 	private JTextField guessResultTextField = new JTextField(30);
+	private static Board board = Board.getInstance();
+	private GameControlPanel gameControl;
 
 	public GameControlPanel() {
+		gameControl = this;
 		setLayout(new GridLayout(2,0));
 		JPanel upperPanel = createUpperPanel();
 		JPanel lowerPanel = createLowerPanel();
@@ -47,8 +52,18 @@ public class GameControlPanel extends JPanel {
 		panel.add(accusationButton);
 
 		JButton nextButton = new JButton("NEXT!");
+		nextButton.addActionListener(new NextButtonListener());
 		panel.add(nextButton);
 		return panel;
+	}
+	
+	private class NextButtonListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			board.nextButton(gameControl);
+		}
+		
 	}
 
 	
@@ -72,7 +87,7 @@ public class GameControlPanel extends JPanel {
 		return guessPanel;
 	}
 	
-	public void setTurn(ComputerPlayer comPlayer, int roll) {
+	public void setTurn(Player comPlayer, int roll) {
 		turnTextField.setText(comPlayer.getName());
 		rollTextField.setText(String.valueOf(roll));
 	}
