@@ -363,6 +363,7 @@ public class Board extends JPanel {
 		}
 		
 		if (!finished) {
+			//draw the targets in a new color
 			for (BoardCell target : targets) {
 				target.drawTargets(graphics, width, height);
 			}
@@ -388,19 +389,21 @@ public class Board extends JPanel {
 			currentPlayer = players.get(playerValue);
 			Random random = new Random();
 			int roll = random.nextInt(ROLL_SIZE);
-			calcTargets(getCell(currentPlayer.getRow(), currentPlayer.getCol()), 7);
-			gameControl.setTurn(currentPlayer, 7);
+			//add 1 to the roll since the range of random is 0-5 instead of 1-6
+			calcTargets(getCell(currentPlayer.getRow(), currentPlayer.getCol()), roll + 1);
+			gameControl.setTurn(currentPlayer, roll + 1);
 			if(currentPlayer.equals(humanPlayer)) {
-				finished = false;
+				finished = false; //signifies that the player is not done and that you should draw the targets
 				repaint();
 			} else {
 				BoardCell chosenTarget = currentPlayer.selectTarget();
+				//want to update the computer player's row and column
 				currentPlayer.setRow(chosenTarget.getRow());
 				currentPlayer.setCol(chosenTarget.getCol());
 				repaint();
 			}
 		} else { //player has not done their move
-			JOptionPane.showMessageDialog(null, "Please finish your turn!");
+			JOptionPane.showMessageDialog(this, "Please finish your turn!");
 		}
 		
 	}

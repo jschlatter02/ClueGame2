@@ -29,7 +29,7 @@ public class ClueGame extends JFrame{
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JOptionPane.showMessageDialog(this, "You are " + humanPlayer.getName() + ". Can you find the solution before the Computer players?");
+		JOptionPane.showMessageDialog(this, "You are " + humanPlayer.getName() + ".\nCan you find the solution\nbefore the Computer players?");
 		board.nextButton(gameControl);
 	}
 	

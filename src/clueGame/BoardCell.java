@@ -155,6 +155,7 @@ public class BoardCell {
 	
 	public void drawTargets(Graphics graphics, int width, int height) {
 		Color cellColor = new Color(51, 153, 255);
+		//local offset variables to determine the target locations
 		int horizontalOffset = width * col;
 		int topOffset = height * row;
 		if (initial == 'W') {
@@ -163,6 +164,7 @@ public class BoardCell {
 			graphics.setColor(Color.black);
 			graphics.drawRect(horizontalOffset, topOffset, width, height);
 		} else if (roomCenter) {
+			//dont need an outline for rooms because
 			graphics.setColor(cellColor);
 			graphics.fillRect(horizontalOffset, topOffset, width, height);
 		}
