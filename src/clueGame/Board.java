@@ -3,6 +3,8 @@ package clueGame;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
@@ -11,7 +13,7 @@ import java.util.function.BooleanSupplier;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class Board extends JPanel {
+public class Board extends JPanel implements MouseListener{
 	private BoardCell[][] grid;
 	private Set<BoardCell> targets;
 	private Set<BoardCell> visited;
@@ -355,12 +357,6 @@ public class Board extends JPanel {
 			}
 			topOffset += height;
 		}
-		//reset these values so that we can calculate the position in the player method
-		horizontalOffset = 0;
-		topOffset = 0;
-		for (Player player : players) {
-			player.drawPlayer(graphics, width, height, horizontalOffset, topOffset);
-		}
 		
 		if (!finished) {
 			//draw the targets in a new color
@@ -368,6 +364,15 @@ public class Board extends JPanel {
 				target.drawTargets(graphics, width, height);
 			}
 		}
+		
+		//reset these values so that we can calculate the position in the player method
+		horizontalOffset = 0;
+		topOffset = 0;
+		for (Player player : players) {
+			player.drawPlayer(graphics, width, height, horizontalOffset, topOffset);
+		}
+		
+		
 		
 		//write the room names so they don't get written over
 		for (String[] locations : nameLocations) {
@@ -394,19 +399,90 @@ public class Board extends JPanel {
 			gameControl.setTurn(currentPlayer, roll + 1);
 			if(currentPlayer.equals(humanPlayer)) {
 				finished = false; //signifies that the player is not done and that you should draw the targets
+				
+				for(int i = 0; i < numRows; i++) {
+					for(int j = 0; j < numColumns; j++) {
+						char initial = grid[i][j].getInitial();
+						if(targets.contains(roomMap.get(initial).getCenterCell())){
+							targets.add(grid[i][j]);
+						}
+					}
+				}
+				
 				repaint();
 			} else {
+				int row = currentPlayer.getRow();
+				int col = currentPlayer.getCol();
+				grid[row][col].setOccupied(false);
+				
 				BoardCell chosenTarget = currentPlayer.selectTarget();
 				//want to update the computer player's row and column
 				currentPlayer.setRow(chosenTarget.getRow());
 				currentPlayer.setCol(chosenTarget.getCol());
+				row = currentPlayer.getRow();
+				col = currentPlayer.getCol();
+				grid[row][col].setOccupied(true);
+				
 				repaint();
 			}
 		} else { //player has not done their move
 			JOptionPane.showMessageDialog(this, "Please finish your turn!");
 		}
-		
 	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+
+		if(currentPlayer.equals(humanPlayer)) {
+			BoardCell clickedCell = null;
+			int width = getWidth() / numColumns; //width of an individual board cell
+			int height = getHeight() / numRows;  //height of an individual board cell
+			
+			for(BoardCell target : targets) {
+				if(target.containsClicked(e.getX(), e.getY(), width, height)) {
+					clickedCell = target;
+					break;
+				}
+			}
+			
+			if(clickedCell == null) {
+				JOptionPane.showMessageDialog(this, "Not a target Cell.");
+				
+			} else if(clickedCell.getInitial() != 'W' && !clickedCell.isRoomCenter()) {
+				int row = currentPlayer.getRow();
+				int col = currentPlayer.getCol();
+				grid[row][col].setOccupied(false);
+				
+				BoardCell boardCenterCell = roomMap.get(clickedCell.getInitial()).getCenterCell();
+				currentPlayer.setRow(boardCenterCell.getRow());
+				currentPlayer.setCol(boardCenterCell.getCol());
+				
+				row = currentPlayer.getRow();
+				col = currentPlayer.getCol();
+				grid[row][col].setOccupied(true);
+				
+				finished = true;
+				repaint();
+			} else {
+				int row = currentPlayer.getRow();
+				int col = currentPlayer.getCol();
+				grid[row][col].setOccupied(false);
+				
+				currentPlayer.setRow(clickedCell.getRow());
+				currentPlayer.setCol(clickedCell.getCol());
+				
+				row = currentPlayer.getRow();
+				col = currentPlayer.getCol();
+				grid[row][col].setOccupied(true);
+				
+				finished = true;
+				repaint();
+			}
+			
+			
+		} 
+	}
+
 
 	public void setConfigFiles(String layoutConfigFile, String setupConfigFile) {
 		this.layoutConfigFile = layoutConfigFile;
@@ -470,6 +546,31 @@ public class Board extends JPanel {
 
 	public void setHumanPlayer(HumanPlayer humanPlayer) {
 		this.humanPlayer = humanPlayer;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

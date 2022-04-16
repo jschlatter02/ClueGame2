@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.*;
 
 
@@ -163,12 +165,23 @@ public class BoardCell {
 			graphics.fillRect(horizontalOffset, topOffset, width, height);
 			graphics.setColor(Color.black);
 			graphics.drawRect(horizontalOffset, topOffset, width, height);
-		} else if (roomCenter) {
-			//dont need an outline for rooms because
+		} else {
+			//dont need an outline for rooms because it's a filled rectangle.
 			graphics.setColor(cellColor);
 			graphics.fillRect(horizontalOffset, topOffset, width, height);
 		}
 		
+	}
+	
+	public boolean containsClicked(int X, int Y, int width, int height) {
+		int horizontalOffset = width * col;
+		int topOffset = height * row;
+		
+		Rectangle rect = new Rectangle(horizontalOffset, topOffset, width, height);
+		if(rect.contains(new Point(X,Y))) {
+			return true;
+		}
+		return false;
 	}
 	
 	public DoorDirection getDoorDirection() {
