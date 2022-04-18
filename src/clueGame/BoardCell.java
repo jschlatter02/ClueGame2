@@ -139,10 +139,6 @@ public class BoardCell {
 				graphics.setFont(new Font("Cambria", Font.BOLD, width/2));
 				graphics.setColor(Color.BLUE);
 				graphics.drawString("S", horizontalOffset, topOffset);
-				
-				
-				
-				
 				return null;
 			}
 		}

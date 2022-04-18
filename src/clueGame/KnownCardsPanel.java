@@ -72,7 +72,7 @@ public class KnownCardsPanel extends JPanel {
 		if (playerCards.size() == 0) { //add only none
 			JTextField textField = new JTextField(15);
 			textField.setText("None");
-			textField.setEditable(false);
+			textField.setEditable(false);			// makes the text fields un-editable so that user can't change it.
 			panel.add(textField);
 		} else {
 			for (Card card : playerCards) { //add all the cards

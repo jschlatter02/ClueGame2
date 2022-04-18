@@ -23,11 +23,11 @@ public class Board extends JPanel implements MouseListener{
 	private String setupConfigFile;
 	private static Board theInstance = new Board();
 	private Map<Character, Room> roomMap;
-	
+
 	// These are defined globally since two methods uses these instance variables.
 	private FileReader reader = null;
 	private Scanner scanner = null;
-	
+
 	//card instance variables
 	private HumanPlayer humanPlayer;
 	private Player currentPlayer; //keeps track of who's currently moving on the board
@@ -39,10 +39,10 @@ public class Board extends JPanel implements MouseListener{
 	//helpful for the computer suggestions
 	private ArrayList<Card> weaponsCards;
 	private ArrayList<Card> playerCards;
-	
+
 	private Solution theAnswer;
 	private static final int ROLL_SIZE = 6;
-	
+
 
 	// constructor is private to ensure only one can be created
 	private Board() {
@@ -66,7 +66,7 @@ public class Board extends JPanel implements MouseListener{
 		} catch (BadConfigFormatException e) {
 			System.out.println(e.getMessage());
 		}
-		
+
 		createAdjacencyList();
 	}
 
@@ -273,17 +273,17 @@ public class Board extends JPanel implements MouseListener{
 		}
 		numRows = symbolList.size();  //ArrayList size determines amount of rows
 	}
-	
+
 	public void deal() {
 		Random random = new Random();
 		int deckIndex;
-		
+
 		Card roomCard = createSolution(random, CardType.ROOM);
 		Card playerCard = createSolution(random, CardType.PERSON);
 		Card weaponCard = createSolution(random, CardType.WEAPON);
-		
+
 		theAnswer = new Solution(roomCard, playerCard, weaponCard);
-		
+
 		int currentPlayer = 0;
 		do {
 			deckIndex = random.nextInt(deck.size());
@@ -303,12 +303,12 @@ public class Board extends JPanel implements MouseListener{
 			deckIndex = random.nextInt(deck.size());
 			card = deck.get(deckIndex);
 		} while (card.getCardType() != cardType);
-		
+
 		deck.remove(deckIndex);
 		//card removed from deck so we know that it cannot be drawn by someone else
 		return card; 
 	}
-	
+
 	public void setAnswer(Card playerCard, Card roomCard, Card weaponCard) {
 		theAnswer.setPerson(playerCard);
 		theAnswer.setRoom(roomCard);
@@ -318,7 +318,7 @@ public class Board extends JPanel implements MouseListener{
 	public Boolean checkAccusation(Solution accusation) {
 		return theAnswer.equals(accusation);
 	}
-	
+
 	public Card handleSuggestions(Card playerCard, Card roomCard, Card weaponCard, Player accusingPlayer) {
 		for (Player player : players) {
 			//check if the player is not accusing because only the non-accusing players can disprove a suggestion
@@ -332,7 +332,7 @@ public class Board extends JPanel implements MouseListener{
 		}
 		return null; //no valid cards to prove the suggestion
 	}
-	
+
 	@Override
 	public void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);
@@ -355,7 +355,7 @@ public class Board extends JPanel implements MouseListener{
 					//if there is no reset, then you would only be able to see the first row
 					horizontalOffset = initialHorizontalOffset;
 				}
-				
+
 			}
 			topOffset += height;
 		}
@@ -366,30 +366,30 @@ public class Board extends JPanel implements MouseListener{
 				target.drawTargets(graphics, width, height);
 			}
 		}
-		
+
 		//reset these values so that we can calculate the position in the player method
 		horizontalOffset = 0;
 		topOffset = 0;
 		for (Player player : players) {
 			player.drawPlayer(graphics, width, height, horizontalOffset, topOffset);
 		}
-		
-		
-		
+
+
+
 		//write the room names so they don't get written over
 		for (String[] locations : nameLocations) {
 			String name = locations[0];
 			horizontalOffset = Integer.parseInt(locations[1]);
 			topOffset = Integer.parseInt(locations[2]);
-			
+
 			//font size is determined by width so that it scales with the player stretching
 			graphics.setFont(new Font("Cambria", Font.BOLD, width/2));
 			graphics.setColor(Color.BLUE);
 			graphics.drawString(name, horizontalOffset, topOffset);
 		}
-		
+
 	}
-	
+
 	public void nextButton(GameControlPanel gameControl) {
 		if(finished) {
 			playerValue = (playerValue + 1) % players.size(); //better way of getting the iterator back to 0
@@ -401,7 +401,7 @@ public class Board extends JPanel implements MouseListener{
 			gameControl.setTurn(currentPlayer, roll + 1);
 			if(currentPlayer.equals(humanPlayer)) {
 				finished = false; //signifies that the player is not done and that you should draw the targets
-				
+
 				//for loop allows every other cell in the room to be colored
 				for(int i = 0; i < numRows; i++) {
 					for(int j = 0; j < numColumns; j++) {
@@ -414,13 +414,13 @@ public class Board extends JPanel implements MouseListener{
 				//our current algorithm goes through the targets and colors them a different color
 				//by adding the other room cells to the targets, it means they are colored correctly
 				//targets is cleared after the move anyways so it does no harm
-				
+
 				repaint();
 			} else {
 				int row = currentPlayer.getRow();
 				int col = currentPlayer.getCol();
 				grid[row][col].setOccupied(false);
-				
+
 				BoardCell chosenTarget = currentPlayer.selectTarget();
 				//want to update the computer player's row and column
 				currentPlayer.setRow(chosenTarget.getRow());
@@ -428,7 +428,7 @@ public class Board extends JPanel implements MouseListener{
 				row = currentPlayer.getRow();
 				col = currentPlayer.getCol();
 				grid[row][col].setOccupied(true); //computer player cell can not be chosen by any other player
-				
+
 				repaint();
 			}
 		} else { //player has not done their move
@@ -442,17 +442,17 @@ public class Board extends JPanel implements MouseListener{
 			BoardCell clickedCell = null;
 			int width = getWidth() / numColumns; //width of an individual board cell
 			int height = getHeight() / numRows;  //height of an individual board cell
-			
+
 			for(BoardCell target : targets) { //only need to loop through the targets since they are the only valid cells
 				if(target.containsClicked(e.getX(), e.getY(), width, height)) {
 					clickedCell = target;
 					break;
 				}
 			}
-			
+
 			if(clickedCell == null) {
 				JOptionPane.showMessageDialog(this, "Not a target Cell.");
-				
+
 			} else if(clickedCell.getInitial() != 'W' && !clickedCell.isRoomCenter()) { //random room cell
 				int row = currentPlayer.getRow();
 				int col = currentPlayer.getCol();
@@ -461,11 +461,11 @@ public class Board extends JPanel implements MouseListener{
 				BoardCell boardCenterCell = roomMap.get(clickedCell.getInitial()).getCenterCell();
 				currentPlayer.setRow(boardCenterCell.getRow());
 				currentPlayer.setCol(boardCenterCell.getCol());
-				
+
 				row = currentPlayer.getRow();
 				col = currentPlayer.getCol();
 				grid[row][col].setOccupied(true); //set the current cell's occupied to true
-				
+
 				finished = true; //player is finished with their turn
 				repaint();
 			} else {
@@ -476,11 +476,11 @@ public class Board extends JPanel implements MouseListener{
 				//update player location so that it gets redrawn in the correct location
 				currentPlayer.setRow(clickedCell.getRow());
 				currentPlayer.setCol(clickedCell.getCol());
-				
+
 				row = currentPlayer.getRow();
 				col = currentPlayer.getCol();
 				grid[row][col].setOccupied(true);
-				
+
 				finished = true;
 				repaint();
 			}
@@ -502,7 +502,7 @@ public class Board extends JPanel implements MouseListener{
 		char label = cell.getInitial();
 		return roomMap.get(label);
 	}
-	
+
 	public void setPlayers(ArrayList<Player> players) {
 		this.players = players;
 	}
@@ -555,30 +555,30 @@ public class Board extends JPanel implements MouseListener{
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
+
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
-	
+
+
 
 
 

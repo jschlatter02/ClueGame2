@@ -58,17 +58,14 @@ public class GameControlPanel extends JPanel {
 		panel.add(nextButton);
 		return panel;
 	}
-	
-	private class NextButtonListener implements ActionListener {
 
+	private class NextButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			board.nextButton(gameControl);
-		}
-		
+		}	
 	}
 
-	
 	private JPanel createLowerPanel() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(0,2));
@@ -81,15 +78,17 @@ public class GameControlPanel extends JPanel {
 		return panel;
 	}
 
+
+	// Added this method because adding the textfields for both panels are exactly the same.
 	private JPanel createGuessTextFields(JTextField textField, String message) {
 		JPanel guessPanel = new JPanel();
 		guessPanel.setBorder(new TitledBorder(new EtchedBorder(),message));
 		textField.setEditable(false);
 		guessPanel.add(textField, BorderLayout.WEST);
-		
+
 		return guessPanel;
 	}
-	
+
 	public void setTurn(Player comPlayer, int roll) {
 		turnTextField.setText(comPlayer.getName());
 		rollTextField.setText(String.valueOf(roll));
@@ -98,7 +97,7 @@ public class GameControlPanel extends JPanel {
 	public void setGuess(String message) {
 		guessTextField.setText(message);
 	}
-	
+
 	public void setGuessResult(String message) {
 		guessResultTextField.setText(message);
 	}
