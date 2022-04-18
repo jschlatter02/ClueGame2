@@ -132,11 +132,17 @@ public class BoardCell {
 				graphics.setColor(Color.YELLOW);
 				graphics.fillRect(horizontalOffset, topOffset, width, height);
 				//these adjustments put the "S" in the correct spot inside the square
+				graphics.setColor(Color.RED);
+				graphics.drawRect(horizontalOffset + (width / 4), topOffset + (height / 4), width / 2 , height / 2);
 				horizontalOffset += (width / 3);
 				topOffset += (height / 1.5);
 				graphics.setFont(new Font("Cambria", Font.BOLD, width/2));
 				graphics.setColor(Color.BLUE);
 				graphics.drawString("S", horizontalOffset, topOffset);
+				
+				
+				
+				
 				return null;
 			}
 		}
