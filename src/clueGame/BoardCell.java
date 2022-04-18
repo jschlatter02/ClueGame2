@@ -82,39 +82,26 @@ public class BoardCell {
 		if (initial == 'W') {
 			graphics.setColor(Color.YELLOW);
 			graphics.fillRect(horizontalOffset, topOffset, width, height);
-			graphics.setColor(Color.BLACK);
+			graphics.setColor(Color.BLACK); //makes the rectangle more distinct from the other rectangles
 			graphics.drawRect(horizontalOffset, topOffset, width, height);
 			
-			Graphics2D graphics2D = (Graphics2D) graphics;
-			
-			switch(doorDirection) { //draw the blue door line in the cell that has the doorway
-			case UP:
-				//use graphics2d to make the stroke bigger above the cell
-				graphics2D.setColor(Color.BLUE);
-				graphics2D.setStroke(new BasicStroke(height / 8));
-				graphics2D.drawLine(horizontalOffset, topOffset, horizontalOffset + width, topOffset);
-				//need to reset the stroke size so that all the other lines aren't bold as well
-				graphics2D.setStroke(new BasicStroke(1));
+			switch(doorDirection) {
+			case UP: //draws a small rectangle above/below/to the left/to the right of the actual doorway cell
+				//makes the doors more visible
+				graphics.setColor(Color.BLUE);			
+				graphics.fillRect(horizontalOffset, topOffset - height / 5, width, height / 5);
 				break;
 			case LEFT:
-				graphics2D.setColor(Color.BLUE);
-				//stroke size based on width or height to make sure it doesn't take up the whole cell
-				//also makes sure that it scales well with the player moving the window
-				graphics2D.setStroke(new BasicStroke(width / 7));
-				graphics2D.drawLine(horizontalOffset, topOffset, horizontalOffset, topOffset + height);
-				graphics2D.setStroke(new BasicStroke(1));
+				graphics.setColor(Color.BLUE);
+				graphics.fillRect(horizontalOffset - width / 5, topOffset, width / 5, height);
 				break;
 			case RIGHT:
-				graphics2D.setColor(Color.BLUE);
-				graphics2D.setStroke(new BasicStroke(width / 5));
-				graphics2D.drawLine(horizontalOffset + width, topOffset, horizontalOffset + width, topOffset + height);
-				graphics2D.setStroke(new BasicStroke(1));
+				graphics.setColor(Color.BLUE);
+				graphics.fillRect(horizontalOffset + width, topOffset, width / 5, height);
 				break;
 			case DOWN:
-				graphics2D.setColor(Color.BLUE);
-				graphics2D.setStroke(new BasicStroke(height / 5));
-				graphics2D.drawLine(horizontalOffset, topOffset + height, horizontalOffset + width, topOffset + height);
-				graphics2D.setStroke(new BasicStroke(1));
+				graphics.setColor(Color.BLUE);
+				graphics.fillRect(horizontalOffset, topOffset + height, width, height/ 5);
 				break;
 			case NONE:
 				break;
@@ -126,7 +113,8 @@ public class BoardCell {
 			graphics.fillRect(horizontalOffset, topOffset, width, height);
 			return null;
 		} else {
-			graphics.setColor(Color.GRAY);
+			Color roomColor = new Color(0, 0, 255, 30);
+			graphics.setColor(roomColor);
 			graphics.fillRect(horizontalOffset, topOffset, width, height);
 			
 			if (roomLabel) { 
