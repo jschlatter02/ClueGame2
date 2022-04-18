@@ -319,10 +319,10 @@ public class Board extends JPanel implements MouseListener{
 		return theAnswer.equals(accusation);
 	}
 	
-	public Card handleSuggestions(Card playerCard, Card roomCard, Card weaponCard, int suggester) {
-		for (int player = 0; player < players.size(); player++) {
-			if (player != suggester) {
-				Card disprovenCard = players.get(player).disproveSuggestion(playerCard, roomCard, weaponCard);
+	public Card handleSuggestions(Card playerCard, Card roomCard, Card weaponCard, Player accusingPlayer) {
+		for (Player player : players) {
+			if (!player.equals(accusingPlayer)) {
+				Card disprovenCard = player.disproveSuggestion(playerCard, roomCard, weaponCard);
 				if (disprovenCard != null) {
 					return disprovenCard;
 				}

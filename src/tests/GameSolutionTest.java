@@ -111,19 +111,19 @@ class GameSolutionTest {
 		
 		board.setPlayers(players); //make sure that our player list is used for the tests
 		
-		Card notDisproven = board.handleSuggestions(aristotleCard, bathroomCard, sickleCard, 0);
+		Card notDisproven = board.handleSuggestions(aristotleCard, bathroomCard, sickleCard, humanPlayer);
 		//last integer is which player is making a suggestion
 		assertEquals(notDisproven, null);
 		
-		Card accuserDisproven = board.handleSuggestions(wozniakCard, laundryCard, bowCard, 0);
+		Card accuserDisproven = board.handleSuggestions(wozniakCard, laundryCard, bowCard, humanPlayer);
 		assertEquals(accuserDisproven, null);
 		
 		//test if other players are accuser that their card is not chosen
-		Card player1Disproven = board.handleSuggestions(smithCard, livingCard, bowCard, 1);
+		Card player1Disproven = board.handleSuggestions(smithCard, livingCard, bowCard, compPlayer1);
 		assertEquals(player1Disproven, null);
 	
 		//player 1's card must disprove the statement and not player 2's card
-		Card earliestDisproven = board.handleSuggestions(aristotleCard, livingCard, knifeCard, 0);
+		Card earliestDisproven = board.handleSuggestions(aristotleCard, livingCard, knifeCard, humanPlayer);
 		assertEquals(earliestDisproven, livingCard);
 	}
 
