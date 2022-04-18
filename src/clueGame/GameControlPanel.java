@@ -35,6 +35,7 @@ public class GameControlPanel extends JPanel {
 		turnTextField = new JTextField(15);
 		//BorderLayout helps center the labels and textFields
 		turnPanel.add(label, BorderLayout.NORTH);
+		turnTextField.setEditable(false);
 		turnPanel.add(turnTextField, BorderLayout.CENTER);
 
 		panel.add(turnPanel);
@@ -44,6 +45,7 @@ public class GameControlPanel extends JPanel {
 		rollTextField = new JTextField(5);
 		//puts both label and textField at the top
 		rollPanel.add(label, BorderLayout.NORTH);
+		rollTextField.setEditable(false);
 		rollPanel.add(rollTextField, BorderLayout.NORTH);
 
 		panel.add(rollPanel);
@@ -82,6 +84,7 @@ public class GameControlPanel extends JPanel {
 	private JPanel createGuessTextFields(JTextField textField, String message) {
 		JPanel guessPanel = new JPanel();
 		guessPanel.setBorder(new TitledBorder(new EtchedBorder(),message));
+		textField.setEditable(false);
 		guessPanel.add(textField, BorderLayout.WEST);
 		
 		return guessPanel;

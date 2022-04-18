@@ -72,11 +72,13 @@ public class KnownCardsPanel extends JPanel {
 		if (playerCards.size() == 0) { //add only none
 			JTextField textField = new JTextField(15);
 			textField.setText("None");
+			textField.setEditable(false);
 			panel.add(textField);
 		} else {
 			for (Card card : playerCards) { //add all the cards
 				JTextField textField = new JTextField(15);
 				textField.setText(card.getCardName());
+				textField.setEditable(false);
 				panel.add(textField);
 			}
 		}
