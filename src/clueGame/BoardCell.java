@@ -148,17 +148,15 @@ public class BoardCell {
 		//local offset variables to determine the target locations
 		int horizontalOffset = width * col;
 		int topOffset = height * row;
-		if (initial == 'W') {
-			graphics.setColor(cellColor);
-			graphics.fillRect(horizontalOffset, topOffset, width, height);
+		
+		// outline for a walkway to make it easier to distinguish.
+		graphics.setColor(cellColor);
+		graphics.fillRect(horizontalOffset, topOffset, width, height);
+		
+		if (initial == 'W') {	
 			graphics.setColor(Color.black);
 			graphics.drawRect(horizontalOffset, topOffset, width, height);
-		} else {
-			//dont need an outline for rooms because it's a filled rectangle.
-			graphics.setColor(cellColor);
-			graphics.fillRect(horizontalOffset, topOffset, width, height);
 		}
-		
 	}
 	
 	public boolean containsClicked(int mouseX, int mouseY, int width, int height) {
