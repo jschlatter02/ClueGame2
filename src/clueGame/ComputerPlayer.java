@@ -65,13 +65,15 @@ public class ComputerPlayer extends Player{
 		
 		for (BoardCell target : targets) {
 			if (target.isRoomCenter()) { //add all the rooms to a separate array
+				//we do this so that we can eventually see if there are any unseen 
 				Room adjRoom = roomMap.get(target.getInitial());
 				Card targetCard = new Card(adjRoom.getName(), CardType.ROOM);
 				allRooms.add(targetCard);
 			}
 		}
 		
-		for(Card roomCard : allRooms) { //.contains() would not work for some reason so we had to implement our own algorithm
+		for(Card roomCard : allRooms) { 
+			//if the room is unseen, then add it to a separate array so that we can shuffle it and get a random room
 			if (!hand.contains(roomCard) && !seenCards.contains(roomCard)) {
 				unseenRooms.add(roomCard);
 			}
@@ -83,9 +85,11 @@ public class ComputerPlayer extends Player{
 			int randIdx = randInt.nextInt(targetsArray.length);
 			return targetsArray[randIdx];
 		} else { //choose a random room from the rooms that have not been seen
-			Card randomTarget = unseenRooms.get(randInt.nextInt(unseenRooms.size()));
+			Card randomTarget = unseenRooms.get(randInt.nextInt(unseenRooms.size())); //random room
 			for (Room room : roomMap.values()) {
 				if (room.getName().equals(randomTarget.getCardName())) {
+					//checks the name between the room variable and the card because they should be the same
+					//do this to change a card to an actual board cell
 					BoardCell roomCell = room.getCenterCell();
 					return roomCell;
 				}

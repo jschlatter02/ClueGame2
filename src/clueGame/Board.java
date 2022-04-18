@@ -321,14 +321,16 @@ public class Board extends JPanel implements MouseListener{
 	
 	public Card handleSuggestions(Card playerCard, Card roomCard, Card weaponCard, Player accusingPlayer) {
 		for (Player player : players) {
+			//check if the player is not accusing because only the non-accusing players can disprove a suggestion
 			if (!player.equals(accusingPlayer)) {
 				Card disprovenCard = player.disproveSuggestion(playerCard, roomCard, weaponCard);
 				if (disprovenCard != null) {
+					//means that a player was able to disprove the suggestion
 					return disprovenCard;
 				}
 			}
 		}
-		return null;
+		return null; //no valid cards to prove the suggestion
 	}
 	
 	@Override
