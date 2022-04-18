@@ -24,7 +24,7 @@ public class ClueGame extends JFrame{
 		
 		add(board, BorderLayout.CENTER);
 		
-		board.addMouseListener(board);
+		board.addMouseListener(board); //so we can actually click on the board
 		
 		setSize(750, 780);
 		setTitle("Clue Game - CSCI 306");

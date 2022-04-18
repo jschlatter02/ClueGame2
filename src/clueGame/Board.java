@@ -316,7 +316,7 @@ public class Board extends JPanel implements MouseListener{
 	}
 
 	public Boolean checkAccusation(Solution accusation) {
-		return (accusation.getPerson().equals(theAnswer.getPerson()) && accusation.getRoom().equals(theAnswer.getRoom()) && accusation.getWeapon().equals(theAnswer.getWeapon()));
+		return theAnswer.equals(accusation);
 	}
 	
 	public Card handleSuggestions(Card playerCard, Card roomCard, Card weaponCard, int suggester) {
@@ -357,7 +357,7 @@ public class Board extends JPanel implements MouseListener{
 			}
 			topOffset += height;
 		}
-		
+		//targets are drawn before the players so that they don't overwrite the player drawing
 		if (!finished) {
 			//draw the targets in a new color
 			for (BoardCell target : targets) {
@@ -400,6 +400,7 @@ public class Board extends JPanel implements MouseListener{
 			if(currentPlayer.equals(humanPlayer)) {
 				finished = false; //signifies that the player is not done and that you should draw the targets
 				
+				//for loop allows every other cell in the room to be colored
 				for(int i = 0; i < numRows; i++) {
 					for(int j = 0; j < numColumns; j++) {
 						char initial = grid[i][j].getInitial();
@@ -408,6 +409,9 @@ public class Board extends JPanel implements MouseListener{
 						}
 					}
 				}
+				//our current algorithm goes through the targets and colors them a different color
+				//by adding the other room cells to the targets, it means they are colored correctly
+				//targets is cleared after the move anyways so it does no harm
 				
 				repaint();
 			} else {
@@ -421,7 +425,7 @@ public class Board extends JPanel implements MouseListener{
 				currentPlayer.setCol(chosenTarget.getCol());
 				row = currentPlayer.getRow();
 				col = currentPlayer.getCol();
-				grid[row][col].setOccupied(true);
+				grid[row][col].setOccupied(true); //computer player cell can not be chosen by any other player
 				
 				repaint();
 			}
@@ -432,13 +436,12 @@ public class Board extends JPanel implements MouseListener{
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-
 		if(currentPlayer.equals(humanPlayer)) {
 			BoardCell clickedCell = null;
 			int width = getWidth() / numColumns; //width of an individual board cell
 			int height = getHeight() / numRows;  //height of an individual board cell
 			
-			for(BoardCell target : targets) {
+			for(BoardCell target : targets) { //only need to loop through the targets since they are the only valid cells
 				if(target.containsClicked(e.getX(), e.getY(), width, height)) {
 					clickedCell = target;
 					break;
@@ -448,26 +451,27 @@ public class Board extends JPanel implements MouseListener{
 			if(clickedCell == null) {
 				JOptionPane.showMessageDialog(this, "Not a target Cell.");
 				
-			} else if(clickedCell.getInitial() != 'W' && !clickedCell.isRoomCenter()) {
+			} else if(clickedCell.getInitial() != 'W' && !clickedCell.isRoomCenter()) { //random room cell
 				int row = currentPlayer.getRow();
 				int col = currentPlayer.getCol();
-				grid[row][col].setOccupied(false);
-				
+				grid[row][col].setOccupied(false); //set previous cell's occupied value to false
+				//get the center cell so that the player actually moves to the center cell
 				BoardCell boardCenterCell = roomMap.get(clickedCell.getInitial()).getCenterCell();
 				currentPlayer.setRow(boardCenterCell.getRow());
 				currentPlayer.setCol(boardCenterCell.getCol());
 				
 				row = currentPlayer.getRow();
 				col = currentPlayer.getCol();
-				grid[row][col].setOccupied(true);
+				grid[row][col].setOccupied(true); //set the current cell's occupied to true
 				
-				finished = true;
+				finished = true; //player is finished with their turn
 				repaint();
 			} else {
+				//make sure that computer players can move to the previous cell
 				int row = currentPlayer.getRow();
 				int col = currentPlayer.getCol();
 				grid[row][col].setOccupied(false);
-				
+				//update player location so that it gets redrawn in the correct location
 				currentPlayer.setRow(clickedCell.getRow());
 				currentPlayer.setCol(clickedCell.getCol());
 				
@@ -478,8 +482,6 @@ public class Board extends JPanel implements MouseListener{
 				finished = true;
 				repaint();
 			}
-			
-			
 		} 
 	}
 

@@ -173,12 +173,13 @@ public class BoardCell {
 		
 	}
 	
-	public boolean containsClicked(int X, int Y, int width, int height) {
+	public boolean containsClicked(int mouseX, int mouseY, int width, int height) {
+		//determine the position of the grid cell
 		int horizontalOffset = width * col;
 		int topOffset = height * row;
-		
+		//check if the mouse has been clicked in the grid rectangle
 		Rectangle rect = new Rectangle(horizontalOffset, topOffset, width, height);
-		if(rect.contains(new Point(X,Y))) {
+		if(rect.contains(new Point(mouseX,mouseY))) {
 			return true;
 		}
 		return false;

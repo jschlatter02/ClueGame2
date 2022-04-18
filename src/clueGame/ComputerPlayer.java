@@ -58,6 +58,11 @@ public class ComputerPlayer extends Player{
 		ArrayList<Card> allRooms = new ArrayList<Card>();
 		ArrayList<Card> unseenRooms = new ArrayList<Card>();
 		
+		if (targets.size() == 0) {
+			//if the player cannot move, then they must stay where they are
+			return board.getCell(super.getRow(), super.getCol());
+		}
+		
 		for (BoardCell target : targets) {
 			if (target.isRoomCenter()) { //add all the rooms to a separate array
 				Room adjRoom = roomMap.get(target.getInitial());
