@@ -10,6 +10,7 @@ public abstract class Player {
 	private int row, col;
 	private Set<Card> hand;
 	private Set<Card> seenCards;
+	private boolean cannotDisprove = false; //player could not disprove a suggestion
 	
 	public abstract void updateHand(Card card);
 	public abstract BoardCell selectTarget();
@@ -86,6 +87,12 @@ public abstract class Player {
 		return hand;
 	}
 
+	public boolean isCannotDisprove() {
+		return cannotDisprove;
+	}
+	public void setCannotDisprove(boolean cannotDisprove) {
+		this.cannotDisprove = cannotDisprove;
+	}
 	public String getName() {
 		return name;
 	}

@@ -35,7 +35,7 @@ public class Board extends JPanel implements MouseListener {
 	//used so that when we delete from deck, we don't lose the list of cards
 	//helpful for the computer suggestions
 	private ArrayList<Card> weaponsCards, playerCards, roomCards;
-	private boolean cannotDisprove = false; //player could not disprove a suggestion
+	
 	private Solution theAnswer;
 	private static final int ROLL_SIZE = 6;
 
@@ -364,15 +364,30 @@ public class Board extends JPanel implements MouseListener {
 				target.drawTargets(graphics, width, height);
 			}
 		}
+		
+		Set<Player> sameLocation = new HashSet<Player>();
+		for (int i = 0; i < players.size(); i++) {
+			for (int j = i + 1; j < players.size(); j++) {
+				if (players.get(i).getRow() == players.get(j).getRow() && players.get(i).getCol() == players.get(j).getCol()) {
+					sameLocation.add(players.get(i));
+					sameLocation.add(players.get(j));
+				}
+			}
+		}
 
 		//reset these values so that we can calculate the position in the player method
 		horizontalOffset = 0;
 		topOffset = 0;
+		int sameLocationOffset = width / 3;
 		for (Player player : players) {
+			if (sameLocation.contains(player)) {
+				player.drawPlayer(graphics, width, height, horizontalOffset + sameLocationOffset, topOffset);
+				sameLocationOffset += sameLocationOffset;
+			} else {
 			player.drawPlayer(graphics, width, height, horizontalOffset, topOffset);
+			}
 		}
-
-
+		
 
 		//write the room names so they don't get written over
 		for (String[] locations : nameLocations) {
@@ -385,7 +400,6 @@ public class Board extends JPanel implements MouseListener {
 			graphics.setColor(Color.BLUE);
 			graphics.drawString(name, horizontalOffset, topOffset);
 		}
-
 	}
 
 	public void nextButton(GameControlPanel gameControl) {
@@ -415,16 +429,19 @@ public class Board extends JPanel implements MouseListener {
 
 				repaint();
 			} else {
+				boolean cannotDisprove = currentPlayer.isCannotDisprove();
 				if (cannotDisprove) { //computer accusation
 					Room currentRoom = null;
 					Solution computerAccusation = currentPlayer.createSuggestion(currentRoom, cannotDisprove);
 					boolean accusationResult = checkAccusation(computerAccusation);
 					if (accusationResult) {
-						
-					} else {
-						
+						Card accusedPlayer = computerAccusation.getPerson();
+						Card accusedRoom = computerAccusation.getRoom();
+						Card accusedWeapon = computerAccusation.getWeapon();
+						JOptionPane.showMessageDialog(this, currentPlayer.getName() + " wins!\nThe answer was " + accusedPlayer.getCardName() + ", " + accusedRoom.getCardName() + ", " + accusedWeapon.getCardName());
+						System.exit(0);
 					}
-					cannotDisprove = false;
+					currentPlayer.setCannotDisprove(false);
 				}
 				
 				int row = currentPlayer.getRow();

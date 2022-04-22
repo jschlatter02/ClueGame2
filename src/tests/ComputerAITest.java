@@ -52,7 +52,7 @@ class ComputerAITest {
 		//created so that the list of cards
 		
 		BoardCell roomCell = board.getCell(14, 3);
-		Solution compSuggestion = compPlayer.createSuggestion(board.getRoom(roomCell)); //want the player in the living room
+		Solution compSuggestion = compPlayer.createSuggestion(board.getRoom(roomCell), false); //want the player in the living room
 		//make sure the room is the one that the player is in
 		Card roomSuggestion = compSuggestion.getRoom();
 		assertTrue(roomSuggestion.equals(livingCard)); //used .equals() because AssertEquals was not passing
