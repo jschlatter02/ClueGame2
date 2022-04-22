@@ -13,6 +13,7 @@ public abstract class Player {
 	
 	public abstract void updateHand(Card card);
 	public abstract BoardCell selectTarget();
+	public abstract Solution createSuggestion(Room currentRoom, boolean cannotDisprove);
 
 	public Player(String name, int row, int col, String color) {
 		this.name = name;

@@ -7,7 +7,7 @@ public class ComputerPlayer extends Player{
 
 	public ComputerPlayer(String name, int row, int col, String color) {
 		super(name, row, col, color);
-		board = board.getInstance();
+		board = Board.getInstance();
 	}
 
 	@Override
@@ -15,14 +15,22 @@ public class ComputerPlayer extends Player{
 		super.getHand().add(card);
 	}
 	
-	public Solution createSuggestion(Room currentRoom) {
+	public Solution createSuggestion(Room currentRoom, boolean cannotDisprove) {
 		Set<Card> hand = super.getHand();
 		Set<Card> seenCards = super.getSeenCards();
 		Random randInt = new Random();
 		ArrayList<Card> playerCards = board.getPlayerCards();
 		ArrayList<Card> weaponCards = board.getWeaponsCards();
+		ArrayList<Card> roomCards = board.getRoomCards();
+		Card roomCard;
 		
-		Card roomCard = new Card(currentRoom.getName(), CardType.ROOM); //room suggestion based on the current room
+		if (cannotDisprove) {
+			ArrayList<Card> unseenRooms = addToUnseen(roomCards, hand, seenCards); 
+			int randomIdx = randInt.nextInt(unseenRooms.size());
+			roomCard = unseenRooms.get(randomIdx);
+		} else {
+			roomCard = new Card(currentRoom.getName(), CardType.ROOM); //room suggestion based on the current room
+		}
 		
 		ArrayList<Card> unseenPlayers = addToUnseen(playerCards, hand, seenCards); //list of players/weapons that have
 		                      													   //not been seen

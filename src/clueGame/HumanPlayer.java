@@ -16,4 +16,9 @@ public class HumanPlayer extends Player{
 	public BoardCell selectTarget() {
 		return null;
 	}
+
+	@Override
+	public Solution createSuggestion(Room currentRoom, boolean cannotDisprove) {
+		return null;
+	}
 }

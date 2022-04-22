@@ -12,22 +12,22 @@ public class Solution {
 		this.weapon = weapon;
 	}
 	
-	public boolean equals(Solution o) {
+	public boolean equals(Solution other) {
 		//check each individual card and if they are equal then set their respective boolean to true
 		boolean bRoom = false;
 		boolean bWeapon = false;
 		boolean bPerson = false;
-		o = (Solution) o;
 		
-		if (room.equals(o.room)) {
+		//these if statements are mostly for readability
+		if (room.equals(other.room)) {
 			bRoom = true;
 		}
 		
-		if (weapon.equals(o.weapon)) {
+		if (weapon.equals(other.weapon)) {
 			bWeapon = true;
 		}
 		
-		if (person.equals(o.person)) {
+		if (person.equals(other.person)) {
 			bPerson = true;
 		}
 		

@@ -21,8 +21,6 @@ public class BoardCell {
 	private boolean roomCenter;
 	private char secretPassage;
 	private Set<BoardCell> adjList;
-	private boolean inTarget;
-	
 	final static int ROOM_LOCATION_SIZE = 3;
 	
 	public BoardCell(int row, int column) {
@@ -132,8 +130,10 @@ public class BoardCell {
 				graphics.setColor(Color.YELLOW);
 				graphics.fillRect(horizontalOffset, topOffset, width, height);
 				//these adjustments put the "S" in the correct spot inside the square
-				graphics.setColor(Color.RED);
+				//adds a rectangle around the S
+				graphics.setColor(Color.BLACK);
 				graphics.drawRect(horizontalOffset + (width / 4), topOffset + (height / 4), width / 2 , height / 2);
+				//centers the S in the middle of the cell
 				horizontalOffset += (width / 3);
 				topOffset += (height / 1.5);
 				graphics.setFont(new Font("Cambria", Font.BOLD, width/2));
@@ -228,7 +228,6 @@ public class BoardCell {
 	}
 
 	public void setInTarget(boolean inTarget) {
-		this.inTarget = inTarget;
 	}
 
 

@@ -5,11 +5,11 @@ import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-public class ClueGame extends JFrame{
+public class ClueGame extends JFrame {
 	private static Board board;
 
 	public ClueGame() {
-		board = board.getInstance();
+		board = Board.getInstance();
 		board.setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
 		board.initialize();
 		board.deal();

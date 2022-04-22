@@ -13,14 +13,11 @@ import java.util.function.BooleanSupplier;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class Board extends JPanel implements MouseListener{
+public class Board extends JPanel implements MouseListener {
 	private BoardCell[][] grid;
-	private Set<BoardCell> targets;
-	private Set<BoardCell> visited;
-	private int numRows;
-	private int numColumns;
-	private String layoutConfigFile;
-	private String setupConfigFile;
+	private Set<BoardCell> targets, visited;
+	private int numRows, numColumns;
+	private String layoutConfigFile, setupConfigFile;
 	private static Board theInstance = new Board();
 	private Map<Character, Room> roomMap;
 
@@ -37,9 +34,8 @@ public class Board extends JPanel implements MouseListener{
 	private boolean finished = true; //check if the human player is done yet
 	//used so that when we delete from deck, we don't lose the list of cards
 	//helpful for the computer suggestions
-	private ArrayList<Card> weaponsCards;
-	private ArrayList<Card> playerCards;
-
+	private ArrayList<Card> weaponsCards, playerCards, roomCards;
+	private boolean cannotDisprove = false; //player could not disprove a suggestion
 	private Solution theAnswer;
 	private static final int ROLL_SIZE = 6;
 
@@ -175,6 +171,7 @@ public class Board extends JPanel implements MouseListener{
 		deck = new ArrayList<Card>();
 		weaponsCards = new ArrayList<Card>();
 		playerCards = new ArrayList<Card>();
+		roomCards = new ArrayList<Card>();
 
 		try {
 			reader = new FileReader(setupConfigFile);
@@ -194,6 +191,7 @@ public class Board extends JPanel implements MouseListener{
 					roomMap.put(character, new Room(name));
 					if (setupArray[0].equals("Room")) {
 						deck.add(new Card(setupArray[1], CardType.ROOM));
+						roomCards.add(new Card(setupArray[1], CardType.ROOM));
 					}
 
 				} else if (setupArray[0].equals("Player")) {  
@@ -211,7 +209,7 @@ public class Board extends JPanel implements MouseListener{
 					playerCards.add(new Card(setupArray[2], CardType.PERSON));
 				} else if (setupArray[0].equals("Weapon")) {
 					deck.add(new Card(setupArray[1], CardType.WEAPON));
-					weaponsCards.add(new Card(setupArray[1], CardType.PERSON));
+					weaponsCards.add(new Card(setupArray[1], CardType.WEAPON));
 				}
 				else {
 					throw new BadConfigFormatException("The specified line does not have the right card format. Retry with a new file.");
@@ -417,6 +415,18 @@ public class Board extends JPanel implements MouseListener{
 
 				repaint();
 			} else {
+				if (cannotDisprove) { //computer accusation
+					Room currentRoom = null;
+					Solution computerAccusation = currentPlayer.createSuggestion(currentRoom, cannotDisprove);
+					boolean accusationResult = checkAccusation(computerAccusation);
+					if (accusationResult) {
+						
+					} else {
+						
+					}
+					cannotDisprove = false;
+				}
+				
 				int row = currentPlayer.getRow();
 				int col = currentPlayer.getCol();
 				grid[row][col].setOccupied(false);
@@ -429,6 +439,37 @@ public class Board extends JPanel implements MouseListener{
 				col = currentPlayer.getCol();
 				grid[row][col].setOccupied(true); //computer player cell can not be chosen by any other player
 
+				//suggestion code
+				if (grid[row][col].isRoomCenter()) {
+					char initial = grid[row][col].getInitial();
+					Room currentRoom = roomMap.get(initial);
+					Solution computerSuggestion = currentPlayer.createSuggestion(currentRoom, cannotDisprove);
+					//update the guess panel
+					Card suggestedPlayer = computerSuggestion.getPerson();
+					Card suggestedRoom = computerSuggestion.getRoom();
+					Card suggestedWeapon = computerSuggestion.getWeapon();
+					
+					for (Player player : players) { //move suggested player into the room
+						if (player.getName().equals(suggestedPlayer.getCardName())) {
+							player.setRow(row);
+							player.setCol(col);
+							break; //break so that no other player gets moved into the room with them
+						}
+					}
+					
+					gameControl.setGuess(suggestedPlayer.getCardName() + ", " + suggestedRoom.getCardName() + ", " + suggestedWeapon.getCardName());
+					Card disprovenCard = handleSuggestions(suggestedPlayer, suggestedRoom, suggestedWeapon, currentPlayer);
+					if (disprovenCard != null) {
+						//add to player's seen list so that they cannot suggest that card again
+						currentPlayer.updateSeen(disprovenCard);
+						gameControl.setGuessResult("Suggestion disproven!");
+					} else {
+						//next computer player can make an accusation
+						cannotDisprove = true;
+						gameControl.setGuessResult("No card could disprove that accusation.");
+					}
+				}
+				
 				repaint();
 			}
 		} else { //player has not done their move
@@ -452,36 +493,26 @@ public class Board extends JPanel implements MouseListener{
 
 			if(clickedCell == null) {
 				JOptionPane.showMessageDialog(this, "Not a target Cell.");
-
-			} else if(clickedCell.getInitial() != 'W' && !clickedCell.isRoomCenter()) { //random room cell
+			} else { //player has clicked on a valid target cell
+				//make sure that computer players can move to the previous cell
 				int row = currentPlayer.getRow();
 				int col = currentPlayer.getCol();
 				grid[row][col].setOccupied(false); //set previous cell's occupied value to false
-				//get the center cell so that the player actually moves to the center cell
-				BoardCell boardCenterCell = roomMap.get(clickedCell.getInitial()).getCenterCell();
-				currentPlayer.setRow(boardCenterCell.getRow());
-				currentPlayer.setCol(boardCenterCell.getCol());
-
+				if(clickedCell.getInitial() != 'W' && !clickedCell.isRoomCenter()) { //random room cell
+					//need to move the player to the center of the room so we find the center cell
+					BoardCell boardCenterCell = roomMap.get(clickedCell.getInitial()).getCenterCell();
+					//update player location so that it gets redrawn in the correct location
+					currentPlayer.setRow(boardCenterCell.getRow());
+					currentPlayer.setCol(boardCenterCell.getCol());
+				} else { //already in the room center or on target
+					currentPlayer.setRow(clickedCell.getRow());
+					currentPlayer.setCol(clickedCell.getCol());
+				}
 				row = currentPlayer.getRow();
 				col = currentPlayer.getCol();
 				grid[row][col].setOccupied(true); //set the current cell's occupied to true
 
-				finished = true; //player is finished with their turn
-				repaint();
-			} else {
-				//make sure that computer players can move to the previous cell
-				int row = currentPlayer.getRow();
-				int col = currentPlayer.getCol();
-				grid[row][col].setOccupied(false);
-				//update player location so that it gets redrawn in the correct location
-				currentPlayer.setRow(clickedCell.getRow());
-				currentPlayer.setCol(clickedCell.getCol());
-
-				row = currentPlayer.getRow();
-				col = currentPlayer.getCol();
-				grid[row][col].setOccupied(true);
-
-				finished = true;
+				finished = true;//player is finished with their turn
 				repaint();
 			}
 		} 
@@ -552,34 +583,20 @@ public class Board extends JPanel implements MouseListener{
 		this.humanPlayer = humanPlayer;
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+	public ArrayList<Card> getRoomCards() {
+		return roomCards;
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
+	public void mouseClicked(MouseEvent e) {}
+	
+	@Override
+	public void mouseReleased(MouseEvent e) {}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
+	public void mouseEntered(MouseEvent e) {}
 
-	}
-
-
-
-
-
+	@Override
+	public void mouseExited(MouseEvent e) {}
 
 }
