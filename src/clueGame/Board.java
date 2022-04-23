@@ -411,6 +411,14 @@ public class Board extends JPanel implements MouseListener {
 			//add 1 to the roll since the range of random is 0-5 instead of 1-6
 			calcTargets(getCell(currentPlayer.getRow(), currentPlayer.getCol()), roll + 1);
 			gameControl.setTurn(currentPlayer, roll + 1);
+			
+			if (targets.size() == 0 || currentPlayer.isPulledIn()) {
+				//need to have the option of staying in the room if they are pulled into the room from a suggestion
+				//size = 0 is here because sometimes a player can get trapped in the room
+				BoardCell currentCell = getCell(currentPlayer.getRow(), currentPlayer.getCol());
+				targets.add(currentCell);
+				currentPlayer.setPulledIn(false); //make sure they can't add this again
+			}
 			if(currentPlayer.equals(humanPlayer)) {
 				finished = false; //signifies that the player is not done and that you should draw the targets
 
@@ -470,6 +478,7 @@ public class Board extends JPanel implements MouseListener {
 						if (player.getName().equals(suggestedPlayer.getCardName())) {
 							player.setRow(row);
 							player.setCol(col);
+							
 							break; //break so that no other player gets moved into the room with them
 						}
 					}
@@ -482,7 +491,7 @@ public class Board extends JPanel implements MouseListener {
 						gameControl.setGuessResult("Suggestion disproven!");
 					} else {
 						//next computer player can make an accusation
-						cannotDisprove = true;
+						currentPlayer.setCannotDisprove(true);
 						gameControl.setGuessResult("No card could disprove that accusation.");
 					}
 				}

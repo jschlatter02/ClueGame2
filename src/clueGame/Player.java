@@ -11,6 +11,7 @@ public abstract class Player {
 	private Set<Card> hand;
 	private Set<Card> seenCards;
 	private boolean cannotDisprove = false; //player could not disprove a suggestion
+	private boolean pulledIn = false;
 	
 	public abstract void updateHand(Card card);
 	public abstract BoardCell selectTarget();
@@ -93,6 +94,15 @@ public abstract class Player {
 	public void setCannotDisprove(boolean cannotDisprove) {
 		this.cannotDisprove = cannotDisprove;
 	}
+	
+	public boolean isPulledIn() {
+		return pulledIn;
+	}
+	
+	public void setPulledIn(boolean pulledIn) {
+		this.pulledIn = pulledIn;
+	}
+	
 	public String getName() {
 		return name;
 	}

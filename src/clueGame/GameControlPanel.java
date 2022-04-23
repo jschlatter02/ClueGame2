@@ -16,6 +16,7 @@ public class GameControlPanel extends JPanel {
 	private JTextField guessResultTextField = new JTextField(30);
 	private static Board board = Board.getInstance();
 	private GameControlPanel gameControl;
+	private AccusationDialog showAccusation;
 
 	public GameControlPanel() {
 		gameControl = this;
@@ -51,6 +52,7 @@ public class GameControlPanel extends JPanel {
 		panel.add(rollPanel);
 
 		JButton accusationButton = new JButton("Make Accusation");
+		accusationButton.addActionListener(new AccusationListener());
 		panel.add(accusationButton);
 
 		JButton nextButton = new JButton("NEXT!");
@@ -63,6 +65,14 @@ public class GameControlPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			board.nextButton(gameControl);
+		}	
+	}
+	
+	private class AccusationListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			//created a new class so that we can easily add different combo boxes to the Dialog
+			showAccusation = new AccusationDialog();
 		}	
 	}
 
