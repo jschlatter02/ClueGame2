@@ -83,7 +83,7 @@ public class SuggestionDialog extends JDialog {
 				humanPlayer.updateSeen(guessResult);
 				board.setHumanPlayer(humanPlayer);
 				knownCards.updatePanels();
-				theGame.setVisible(true);
+				theGame.setVisible(true); //need to make the frame visible again so that the panel actually updates
 			} else {
 				gameControl.setGuessResult("No card was given to disprove your suggestion.");
 			}
@@ -97,6 +97,7 @@ public class SuggestionDialog extends JDialog {
 					break; //break so that no other player gets moved into the room with them
 				}
 			}
+			board.repaint(); //repaint is here because otherwise the player doesn't actually get moved for some reason
 		}
 
 		private Card findCorrectCard(String chosenCard, ArrayList<Card> cards) {

@@ -371,6 +371,8 @@ public class Board extends JPanel implements MouseListener {
 			}
 		}
 		
+		//get a full list of players who have the same location as another player
+		//this allows them to have an offset in a room
 		Set<Player> sameLocation = new HashSet<Player>();
 		for (int i = 0; i < players.size(); i++) {
 			for (int j = i + 1; j < players.size(); j++) {
@@ -386,7 +388,7 @@ public class Board extends JPanel implements MouseListener {
 		topOffset = 0;
 		int sameLocationOffset = 0;
 		for (Player player : players) {
-			if (sameLocation.contains(player)) {
+			if (sameLocation.contains(player)) { //want to draw the players apart from each other
 				player.drawPlayer(graphics, width, height, horizontalOffset + sameLocationOffset, topOffset);
 				sameLocationOffset += width / 4;
 			} else {
@@ -472,7 +474,7 @@ public class Board extends JPanel implements MouseListener {
 				col = currentPlayer.getCol();
 				grid[row][col].setOccupied(true); //computer player cell can not be chosen by any other player
 
-				//suggestion code
+				//computer creates a suggestion
 				if (grid[row][col].isRoomCenter()) {
 					char initial = grid[row][col].getInitial();
 					Room currentRoom = roomMap.get(initial);
@@ -555,7 +557,6 @@ public class Board extends JPanel implements MouseListener {
 					//want to pass in the current room so that we can just handle the suggestion in this class
 					SuggestionDialog suggestionDialog = new SuggestionDialog(currentRoom);
 				}
-				repaint(); //repaints again so that the pulled in player's location gets updated
 			}
 		} 
 	}
