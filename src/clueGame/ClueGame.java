@@ -7,20 +7,24 @@ import javax.swing.JOptionPane;
 
 public class ClueGame extends JFrame {
 	private static Board board;
+	private static ClueGame theGame;
+	private KnownCardsPanel knownCards;
 
-	public ClueGame() {
+	private ClueGame() {
 		board = Board.getInstance();
 		board.setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
 		board.initialize();
 		board.deal();
 
 		Player humanPlayer = board.getHumanPlayer();
-
+		
+		
+		knownCards = new KnownCardsPanel();
+		add(knownCards, BorderLayout.EAST);
+		board.setKnownCards(knownCards); //allow board to change the known cards panel from mousePressed
 		GameControlPanel gameControl = new GameControlPanel();
 		add(gameControl, BorderLayout.SOUTH);
-		//put board in the constructor because otherwise it throws a null pointer for board in KnownCards
-		KnownCardsPanel knownCards = new KnownCardsPanel(board);
-		add(knownCards, BorderLayout.EAST);
+		board.setGameControl(gameControl); //do the same for the game control panel
 
 		add(board, BorderLayout.CENTER);
 
@@ -32,12 +36,19 @@ public class ClueGame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JOptionPane.showMessageDialog(this, "You are " + humanPlayer.getName() + ".\nCan you find the solution\nbefore the Computer players?");
-		board.nextButton(gameControl);
+		board.nextButton();
+	}
+	
+	public static ClueGame getInstance() {
+		return theGame;
 	}
 
+	public KnownCardsPanel getKnownCards() {
+		return knownCards;
+	}
 
 	public static void main(String[] args) {
-		ClueGame theGame = new ClueGame();
+		theGame = new ClueGame();
 	}
 
 }

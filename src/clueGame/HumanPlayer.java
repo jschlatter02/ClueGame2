@@ -13,6 +13,11 @@ public class HumanPlayer extends Player{
 	}
 
 	@Override
+	public void updateSeen(Card card) {
+		super.getSeenCards().add(card);
+	}
+	
+	@Override
 	public BoardCell selectTarget() {
 		return null;
 	}

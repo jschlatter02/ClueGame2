@@ -27,6 +27,7 @@ public class Board extends JPanel implements MouseListener {
 
 	//card instance variables
 	private HumanPlayer humanPlayer;
+	private Player cardDisprover; //keep track of which player disproved a suggestion
 	private Player currentPlayer; //keeps track of who's currently moving on the board
 	private int playerValue; //keeps track of the player arraylist value
 	private ArrayList<Player> players;
@@ -38,6 +39,8 @@ public class Board extends JPanel implements MouseListener {
 	
 	private Solution theAnswer;
 	private static final int ROLL_SIZE = 6;
+	private KnownCardsPanel knownCards;
+	private GameControlPanel gameControl;
 
 
 	// constructor is private to ensure only one can be created
@@ -164,7 +167,7 @@ public class Board extends JPanel implements MouseListener {
 		return grid[row][column];
 	}
 
-	public void loadSetupConfig() throws BadConfigFormatException{
+	public void loadSetupConfig() throws BadConfigFormatException {
 		roomMap = new HashMap<Character, Room>();
 		setupConfigFile = "data/" + setupConfigFile;
 		players = new ArrayList<Player>();
@@ -205,6 +208,8 @@ public class Board extends JPanel implements MouseListener {
 						Player computerPlayer = new ComputerPlayer(setupArray[2], Integer.parseInt(setupArray[3]), Integer.parseInt(setupArray[4]), setupArray[5]);
 						players.add(computerPlayer);
 					}
+					//these next 5 lines add it both to the deck so that we can deal cards
+					//and to a separate array so that we can have a copy of the card for panels
 					deck.add(new Card(setupArray[2], CardType.PERSON));
 					playerCards.add(new Card(setupArray[2], CardType.PERSON));
 				} else if (setupArray[0].equals("Weapon")) {
@@ -324,6 +329,7 @@ public class Board extends JPanel implements MouseListener {
 				Card disprovenCard = player.disproveSuggestion(playerCard, roomCard, weaponCard);
 				if (disprovenCard != null) {
 					//means that a player was able to disprove the suggestion
+					cardDisprover = player;
 					return disprovenCard;
 				}
 			}
@@ -378,13 +384,13 @@ public class Board extends JPanel implements MouseListener {
 		//reset these values so that we can calculate the position in the player method
 		horizontalOffset = 0;
 		topOffset = 0;
-		int sameLocationOffset = width / 3;
+		int sameLocationOffset = 0;
 		for (Player player : players) {
 			if (sameLocation.contains(player)) {
 				player.drawPlayer(graphics, width, height, horizontalOffset + sameLocationOffset, topOffset);
-				sameLocationOffset += sameLocationOffset;
+				sameLocationOffset += width / 4;
 			} else {
-			player.drawPlayer(graphics, width, height, horizontalOffset, topOffset);
+				player.drawPlayer(graphics, width, height, horizontalOffset, topOffset);
 			}
 		}
 		
@@ -402,8 +408,10 @@ public class Board extends JPanel implements MouseListener {
 		}
 	}
 
-	public void nextButton(GameControlPanel gameControl) {
+	public void nextButton() {
 		if(finished) {
+			gameControl.setGuess("");
+			gameControl.setGuessResult(""); //clear out the guess and result for the next turn
 			playerValue = (playerValue + 1) % players.size(); //better way of getting the iterator back to 0
 			currentPlayer = players.get(playerValue);
 			Random random = new Random();
@@ -478,7 +486,7 @@ public class Board extends JPanel implements MouseListener {
 						if (player.getName().equals(suggestedPlayer.getCardName())) {
 							player.setRow(row);
 							player.setCol(col);
-							
+							player.setPulledIn(true);
 							break; //break so that no other player gets moved into the room with them
 						}
 					}
@@ -488,7 +496,7 @@ public class Board extends JPanel implements MouseListener {
 					if (disprovenCard != null) {
 						//add to player's seen list so that they cannot suggest that card again
 						currentPlayer.updateSeen(disprovenCard);
-						gameControl.setGuessResult("Suggestion disproven!");
+						gameControl.setGuessResult("Suggestion disproven by " + cardDisprover.getName() + "!");
 					} else {
 						//next computer player can make an accusation
 						currentPlayer.setCannotDisprove(true);
@@ -537,9 +545,17 @@ public class Board extends JPanel implements MouseListener {
 				row = currentPlayer.getRow();
 				col = currentPlayer.getCol();
 				grid[row][col].setOccupied(true); //set the current cell's occupied to true
+				
+				
 
 				finished = true;//player is finished with their turn
 				repaint();
+				if (grid[row][col].isRoomCenter()) {
+					Room currentRoom = roomMap.get(grid[row][col].getInitial());
+					//want to pass in the current room so that we can just handle the suggestion in this class
+					SuggestionDialog suggestionDialog = new SuggestionDialog(currentRoom);
+				}
+				repaint(); //repaints again so that the pulled in player's location gets updated
 			}
 		} 
 	}
@@ -611,6 +627,30 @@ public class Board extends JPanel implements MouseListener {
 
 	public ArrayList<Card> getRoomCards() {
 		return roomCards;
+	}
+
+	public KnownCardsPanel getKnownCards() {
+		return knownCards;
+	}
+
+	public void setKnownCards(KnownCardsPanel knownCards) {
+		this.knownCards = knownCards;
+	}
+
+	public GameControlPanel getGameControl() {
+		return gameControl;
+	}
+
+	public void setGameControl(GameControlPanel gameControl) {
+		this.gameControl = gameControl;
+	}
+
+	public Player getCardDisprover() {
+		return cardDisprover;
+	}
+
+	public boolean isFinished() {
+		return finished;
 	}
 
 	@Override

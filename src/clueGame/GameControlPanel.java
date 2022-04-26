@@ -15,11 +15,9 @@ public class GameControlPanel extends JPanel {
 	private JTextField guessTextField = new JTextField(30);	// initialized it so that it does not throw a null pointer exception.
 	private JTextField guessResultTextField = new JTextField(30);
 	private static Board board = Board.getInstance();
-	private GameControlPanel gameControl;
 	private AccusationDialog showAccusation;
 
 	public GameControlPanel() {
-		gameControl = this;
 		setLayout(new GridLayout(2,0));
 		JPanel upperPanel = createUpperPanel();
 		JPanel lowerPanel = createLowerPanel();
@@ -64,15 +62,19 @@ public class GameControlPanel extends JPanel {
 	private class NextButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			board.nextButton(gameControl);
+			board.nextButton();
 		}	
 	}
 	
 	private class AccusationListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			//created a new class so that we can easily add different combo boxes to the Dialog
-			showAccusation = new AccusationDialog();
+			if (!board.isFinished()) {
+				//created a new class so that we can easily add different combo boxes to the Dialog
+				showAccusation = new AccusationDialog();
+			} else {
+				JOptionPane.showMessageDialog(board, "You cannot accuse when it is not your turn.");
+			}
 		}	
 	}
 

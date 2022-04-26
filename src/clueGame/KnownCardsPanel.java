@@ -3,6 +3,7 @@ package clueGame;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.swing.*;
@@ -15,8 +16,8 @@ public class KnownCardsPanel extends JPanel {
 	private static HumanPlayer humanPlayer;
 	private static Board board;
 	
-	public KnownCardsPanel(Board board) {
-		this.board = board;
+	public KnownCardsPanel() {
+		board = Board.getInstance();
 		setLayout(new GridLayout(3,0));
 		setBorder(new TitledBorder(new EtchedBorder(), "Known Cards"));
 			
@@ -67,15 +68,15 @@ public class KnownCardsPanel extends JPanel {
 		addTextFields(panel, correctSeenCards);
 	}
 
-	private void addTextFields(JPanel panel, ArrayList<Card> playerCards) {
+	private void addTextFields(JPanel panel, ArrayList<Card> cards) {
 		//add the correct amount of text fields to each panel
-		if (playerCards.size() == 0) { //add only none
+		if (cards.size() == 0) { //add only none
 			JTextField textField = new JTextField(15);
 			textField.setText("None");
 			textField.setEditable(false);			// makes the text fields un-editable so that user can't change it.
 			panel.add(textField);
 		} else {
-			for (Card card : playerCards) { //add all the cards
+			for (Card card : cards) { //add all the cards
 				JTextField textField = new JTextField(15);
 				textField.setText(card.getCardName());
 				textField.setEditable(false);
@@ -84,10 +85,10 @@ public class KnownCardsPanel extends JPanel {
 		}
 	}
 
-	private ArrayList<Card> addToCardList(JPanel panel, CardType cardType, Set<Card> playerCards) {
+	private ArrayList<Card> addToCardList(JPanel panel, CardType cardType, Set<Card> cards) {
 		//check if the card is the correct type and then add it to a separate array list
 		ArrayList<Card> correctCardType = new ArrayList<Card>();
-		for(Card card : playerCards) {
+		for(Card card : cards) {
 			if(card.getCardType() == cardType) {
 				correctCardType.add(card);
 			}
@@ -104,15 +105,16 @@ public class KnownCardsPanel extends JPanel {
 		updatePanel(playerPanel, CardType.PERSON);
 		updatePanel(roomPanel, CardType.ROOM);
 		updatePanel(weaponPanel, CardType.WEAPON);	
+		setVisible(true);
 	}
 
 	public static void main(String[] args) {
-		board = board.getInstance();
+		board = Board.getInstance();
 		board.setConfigFiles("ClueLayout.csv", "ClueSetup.txt");
 		board.initialize();
 		board.deal();
 		
-		KnownCardsPanel panel = new KnownCardsPanel(board);  
+		KnownCardsPanel panel = new KnownCardsPanel();  
 		JFrame frame = new JFrame();  
 		//adding many seen cards to each type so that we can test our outline
 		humanPlayer.updateSeen(new Card("Will Smith", CardType.PERSON));
@@ -127,12 +129,17 @@ public class KnownCardsPanel extends JPanel {
 		humanPlayer.updateSeen(new Card("Sickel", CardType.WEAPON));
 		humanPlayer.updateSeen(new Card("Spear", CardType.WEAPON));
 		
-		board.setHumanPlayer(humanPlayer); //need setter so that we can have the correct humanPlayer data in updatePanel
-		panel.updatePanels();
-
 		frame.setContentPane(panel); 
 		frame.setSize(180, 700);  
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+		
+		Scanner reader = new Scanner(System.in);
+		System.out.println("Enter a number: ");
+		String n = reader.next();
+		reader.close();
+		
+		board.setHumanPlayer(humanPlayer); //need setter so that we can have the correct humanPlayer data in updatePanel
+		panel.updatePanels();
 	}
 }
